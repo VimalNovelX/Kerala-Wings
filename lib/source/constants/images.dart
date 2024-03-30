@@ -1,1 +1,2 @@
-const iBackIcons = "assets/svg/Vector(1).svg";
+const iBackIcons = "assets/svg/back_arrow.svg";
+const iProfile = "assets/svg/profile.svg";
