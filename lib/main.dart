@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Kerala Wings',
       debugShowCheckedModeBanner: false,
 
-      home: ProfileSetupScreen()
+      home: SplashScreen()
     );
   }
 }
