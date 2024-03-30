@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:kerala_wings/source/features/screens/profile/profile_setup_screen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/splash/splash_screen.dart';
 
 void main() {
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Kerala Wings',
       debugShowCheckedModeBanner: false,
-      home: SplashScreen()
+
+      home: ProfileSetupScreen()
     );
   }
 }
