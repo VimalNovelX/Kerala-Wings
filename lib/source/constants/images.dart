@@ -1,1 +1,1 @@
-// const iOnbSvg3 = "assets/svg/OnBoard3.svg";
+const iBackIcons = "assets/svg/Vector(1).svg";
