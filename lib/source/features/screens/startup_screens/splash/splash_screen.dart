@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../profile/profile_setup_screen.dart';
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -54,7 +56,11 @@ class SplashScreen extends StatelessWidget {
                   child: SizedBox(
                     height: size.height*0.05,
                     width: size.width*0.5,
-                    child: ElevatedButton(onPressed: (){},
+                    child: ElevatedButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen()));
+                      
+                      
+                    },
                         child: RichText(text: TextSpan(text: "Get ",style: TextStyle(color: Colors.black),
                             children: [TextSpan(text:"Started Now" ,style: TextStyle(color: Color(0xFF5E1A14)))]),)),
                   ),
