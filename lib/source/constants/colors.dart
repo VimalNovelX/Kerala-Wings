@@ -5,3 +5,5 @@ const cYellow = Color(0xFFF8AC00);
 const cDarkRed = Color(0xFF860709);
 const cRed = Color(0xFFC9070A);
 const cBrown = Color(0xFF691415);
+const cGrey  = Color(0xFFEAE7E7);
+const cFont  = Color(0xFF494949);

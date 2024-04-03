@@ -37,6 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.6
   flutter_svg: ^2.0.10+1
+  dotted_line: ^3.2.2
+  action_slider: ^0.7.0
+  image_picker: ^1.0.5
+  intl: ^0.19.0
+
+
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +71,6 @@ flutter:
     - assets/images/
     - assets/png/
     - assets/svg/
-
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
