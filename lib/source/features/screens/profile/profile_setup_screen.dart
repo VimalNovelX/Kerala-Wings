@@ -48,7 +48,9 @@ class ProfileSetupScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CustomBackButton(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
                         const SizedBox(
                           height: 20,
