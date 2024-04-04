@@ -16,8 +16,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Kerala Wings',
       debugShowCheckedModeBanner: false,
-
-      home: LoginScreen()
+      home: ProfileSetupScreen()
     );
   }
 }

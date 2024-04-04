@@ -10,6 +10,11 @@ import 'package:kerala_wings/source/common_widgets/custom_dropdown.dart';
 import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
+import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
+import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
+import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
+import 'package:slide_to_act/slide_to_act.dart';
+import 'package:swipeable_button_view/swipeable_button_view.dart';
 
 import 'controller/selection_controller.dart';
 
@@ -23,6 +28,9 @@ class ProfileSetupScreen extends StatelessWidget {
   String? selectGender;
   final RxInt selectedRadio = (-1).obs;
   final _controller = ActionSliderController();
+  RxBool isFinished = false.obs;
+
+  final GlobalKey<SlideActionState> _key = GlobalKey();
 
   void onChanged(String? value) {
     selectGender = value;
@@ -206,6 +214,13 @@ class ProfileSetupScreen extends StatelessWidget {
                             obscureText: false,
                             readOnly: true,
                             isExpand: false,
+                            validator: (name) {
+                              if (name == null || name.isEmpty) {
+                                return "please select your date of birth";
+                              } else {
+                                return null;
+                              }
+                            },
                             suffix: Icon(
                               Icons.calendar_today,
                               color: Colors.grey.shade400,
@@ -213,8 +228,8 @@ class ProfileSetupScreen extends StatelessWidget {
                             preffix: Obx(
                               () => Container(
                                 margin: const EdgeInsets.only(
-                                    top: 15, bottom: 15, right: 15),
-                                height: 30,
+                                    top: 7, bottom: 7, right: 15),
+
                                 width: 70,
                                 decoration: BoxDecoration(
                                     color:
@@ -268,6 +283,13 @@ class ProfileSetupScreen extends StatelessWidget {
                                   obscureText: false,
                                   readOnly: false,
                                   isExpand: false,
+                                  validator: (name) {
+                                    if (name == null || name.isEmpty) {
+                                      return "please enter your Blood group";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
                                 ),
                               ),
                             ],
@@ -277,20 +299,37 @@ class ProfileSetupScreen extends StatelessWidget {
                           height: 15,
                         ),
                         CustomTextField(
-                          controller: controller.fNameController,
-                          hitText: "Father Name",
+                          hitText: "Active Location",
                           obscureText: false,
                           readOnly: false,
                           isExpand: false,
+                          controller: controller.locController,
+                          validator: (name) {
+                            if (name == null || name.isEmpty) {
+                              return "please enter your location";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                         buildSizedBox(),
 
                         CustomTextField(
                           controller: controller.homeMobController,
                           hitText: "Home Mobile Number",
+                          keyboardType: TextInputType.number,
                           obscureText: false,
                           readOnly: false,
                           isExpand: false,
+                          validator: (name) {
+                            if (name == null || name.isEmpty) {
+                              return "please enter mobile number";
+                            } else {
+                              return null;
+                            }
+                          },
+
+
                         ),
                         buildSizedBox(),
 
@@ -300,17 +339,19 @@ class ProfileSetupScreen extends StatelessWidget {
                           height: 15,
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 15),
+                          padding: const EdgeInsets.only(left: 15),
                           height: 50,
                           width: width,
                           decoration: BoxDecoration(
                               color: cGrey.withOpacity(.5),
                               borderRadius: BorderRadius.circular(8)),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
                                 width: width * .5,
                                 child: TextFormField(
+                                  controller: controller.licenceController,
                                   decoration: const InputDecoration(
                                     hintText: "Licence Number",
                                     border: InputBorder.none,
@@ -327,7 +368,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                   return SizedBox(
                                     width: width * .35,
                                     child: ListView.builder(
-                                      padding: EdgeInsets.symmetric(vertical: 5),
+                                      padding: const EdgeInsets.symmetric(vertical: 5),
                                       itemCount:
                                           controller.drivingLicenceImages.length,
                                       itemBuilder: (context, index) {
@@ -339,7 +380,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                           clipBehavior: Clip.none,
                                           children: [
                                             Container(
-                                              margin: EdgeInsets.only(right: 8),
+                                              margin: const EdgeInsets.only(right: 8),
                                               width: width * .15,
                                               decoration: BoxDecoration(
                                                 borderRadius:
@@ -355,19 +396,24 @@ class ProfileSetupScreen extends StatelessWidget {
                                             Positioned(
                                                 top: -3,
                                                 right: 0,
-                                                child: CircleAvatar(
-                                                  backgroundColor: controller
-                                                              .selectMethod
-                                                              .value ==
-                                                          "Driver"
-                                                      ? cPrimaryColor
-                                                          .withOpacity(.5)
-                                                      : cYellow.withOpacity(.8),
-                                                  radius: 7,
-                                                  child: const Icon(
-                                                    Icons.close,
-                                                    size: 10,
-                                                    color: Colors.white,
+                                                child: InkWell(
+                                                  onTap: (){
+                                                    controller.removeImage(controller.drivingLicenceImages, index);
+                                                  },
+                                                  child: CircleAvatar(
+                                                    backgroundColor: controller
+                                                                .selectMethod
+                                                                .value ==
+                                                            "Driver"
+                                                        ? cPrimaryColor
+                                                            .withOpacity(.8)
+                                                        : cYellow.withOpacity(.8),
+                                                    radius: 7,
+                                                    child: const Icon(
+                                                      Icons.close,
+                                                      size: 10,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ))
                                           ],
@@ -378,19 +424,22 @@ class ProfileSetupScreen extends StatelessWidget {
                                     ),
                                   );
                                 } else {
-                                  return InkWell(
-                                    onTap: () {
-                                      controller.pickImages(
-                                          controller.drivingLicenceImages);
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          controller.selectMethod.value ==
-                                                  "Driver"
-                                              ? cPrimaryColor.withOpacity(.2)
-                                              : cYellow.withOpacity(.3),
-                                      child: Center(
-                                        child: SvgPicture.asset(iArrowUp),
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        controller.pickImages(
+                                            controller.drivingLicenceImages);
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            controller.selectMethod.value ==
+                                                    "Driver"
+                                                ? cPrimaryColor.withOpacity(.3)
+                                                : cYellow.withOpacity(.3),
+                                        child: Center(
+                                          child: SvgPicture.asset(iArrowUp),
+                                        ),
                                       ),
                                     ),
                                   );
@@ -409,14 +458,20 @@ class ProfileSetupScreen extends StatelessWidget {
                           obscureText: false,
                           readOnly: true,
                           isExpand: false,
+                          validator: (name) {
+                            if (name == null || name.isEmpty) {
+                              return "licence expire date";
+                            } else {
+                              return null;
+                            }
+                          },
                           suffix: Icon(
                             Icons.calendar_today,
                             color: Colors.grey.shade400,
                           ),
                           preffix: Obx(() => Container(
                                 margin: const EdgeInsets.only(
-                                    top: 15, bottom: 15, right: 15),
-                                height: 30,
+                                    top: 7, bottom: 7, right: 15),
                                 width: 100,
                                 decoration: BoxDecoration(
                                     color:
@@ -439,7 +494,7 @@ class ProfileSetupScreen extends StatelessWidget {
                             onChanged: onChanged,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please select your gender';
+                                return 'Please select your location';
                               } else {
                                 return null;
                               }
@@ -566,32 +621,37 @@ class ProfileSetupScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: const EdgeInsets.only(bottom: 10.0,right: 15,left: 15),
           child: Obx(
-            () => ActionSlider.standard(
-              toggleColor: Colors.white,
-              backgroundColor: controller.selectMethod.value == "Driver"
-                  ? cPrimaryColor
-                  : cYellow,
-              action: (controller) async {
-                controller.loading();
-                await Future.delayed(const Duration(seconds: 3));
-                controller.success();
-                await Future.delayed(const Duration(seconds: 1));
-                controller.reset();
-              },
-              icon: SvgPicture.asset(iLoading),
-              direction: TextDirection.rtl,
-              child: const Text(
-                'Request Activation',
-                style: TextStyle(
+            () =>  SizedBox(height: 55,
+              child: SlideAction(
+                borderRadius: 50,
+                text: "Request Activation",
+                sliderButtonIconPadding: 12,
+                sliderButtonIcon: SvgPicture.asset(iLoading),
+                height: 55,
+                outerColor: controller.selectMethod.value == "Driver" ? cPrimaryColor : cYellow,
+                textStyle: const TextStyle(
+                    fontSize: 16,
                     color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15),
-              ),
+                  fontWeight: FontWeight.w500
+                ),
+                key: _key,
+                onSubmit: () {
+                  Future.delayed(
+                    const Duration(seconds: 1),
+                        () {
+                      Get.to( QuestionAnsweringScreen());
+                        }
+                  );
+                  return null;
+                },
+                reversed: true,
+              )
             ),
           ),
-        ));
+        )
+    );
   }
 
   RichText buildRichText(String text1, String text2, double size, color) {
