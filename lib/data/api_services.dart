@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart'as http;
+import 'package:kerala_wings/data/models/driver_register.dart';
 import 'package:kerala_wings/data/models/otp_model.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
@@ -135,25 +136,52 @@ class NetworkHelper{
 
 
 
-// //class_division_dropdown
-//   Future<SectionDropDownModel?> sectionDropDownApi(
-//       {required BuildContext context,classId}) async {
-//     http.Response? response;
-//     response = await _postRequest(
-//       context: context,
-//       url: "${Urls.getSectionUrl}",
-//       header: {
-//         "Content-Type": "application/json",
-//         // "Authorization": "Bearer $token"
-//       }, body: {"classId":classId},);
-//     if (response.statusCode == 200) {
-//       return SectionDropDownModel.fromJson(jsonDecode(response.body));
-//     } else {
-//       ToastUtil.show("Server Error Please try After sometime");
-//       debugPrint(response.body);
-//       return null;
-//     }
-//   }
+//class_division_dropdown
+  Future<DriverRegisterModel?> driverRegisterApi(
+      {required BuildContext context,f_name,phone,
+        driverType,address,licenceNo,dob,licenceExp,
+        salaryType,districts,adhaarNo,hPhone,
+        activeLocation,frontLicence,backLicence,
+        profile,bloodGroup,qus,father
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: "${Urls.driverRegisterUrl}",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+    "f_name":"soumya",
+    "phone":"95628268",
+    "driver_type":"cd",
+    "address":"sadsfsdf",
+    "licence_no":"45345345",
+    "dob":"1995/11/15",
+    "licence_exp":"2025/09/01",
+    "salary_type":"Monthly",
+    "districts":"dfsdfs",
+    "adhaar_no":"234232",
+    "h_phone":"9893487626",
+    "active_location":"",
+    "front_licence":"",
+    "back_licence":"",
+    "profile":"",
+    "blood_group":"",
+    "qus":"",
+   // "qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
+    "father":"dsfdg",
+ },);
+    if (response.statusCode == 200) {
+      return DriverRegisterModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
 //
 // //class_student_list
 //   Future<StudentListModel?> classStudentList(

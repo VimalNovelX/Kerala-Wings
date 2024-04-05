@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
 
 import '../../profile/profile_setup_screen.dart';
 
@@ -57,7 +58,7 @@ class SplashScreen extends StatelessWidget {
                     height: size.height*0.05,
                     width: size.width*0.5,
                     child: ElevatedButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (builder)=>LoginScreen()));
                       
                       
                     },

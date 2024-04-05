@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:action_slider/action_slider.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +9,8 @@ import 'package:kerala_wings/source/common_widgets/custom_dropdown.dart';
 import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
-import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
-import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
 import 'package:slide_to_act/slide_to_act.dart';
-import 'package:swipeable_button_view/swipeable_button_view.dart';
-
 import 'controller/selection_controller.dart';
 
 class ProfileSetupScreen extends StatelessWidget {
@@ -23,6 +18,7 @@ class ProfileSetupScreen extends StatelessWidget {
 
   final SelectProfileController controller = Get.put(SelectProfileController());
   final List<String> _genders = ['Trivandrum', 'Kollam', 'Kannur', 'Kochi'];
+  final List<String> _bloodGroup = ['A +ve','B +ve','AB +ve','O +ve','A -ve','B -ve','AB -ve','O -ve',];
 
   final selectedValue = ''.obs;
   String? selectGender;
@@ -264,7 +260,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                 width: width * .65,
                                 child: CustomTextField(
                                   hitText: "Aadhaar Number",
-                                  controller: controller.addressController,
+                                  controller: controller.adharController,
                                   obscureText: false,
                                   readOnly: false,
                                   isExpand: false,
