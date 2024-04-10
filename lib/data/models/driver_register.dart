@@ -1,7 +1,7 @@
 class DriverRegisterModel {
   String? status;
   String? msg;
-  int? data;
+  var data;
 
   DriverRegisterModel({this.status, this.msg, this.data});
 

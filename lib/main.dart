@@ -4,6 +4,7 @@ import 'package:in_app_notification/in_app_notification.dart';
 import 'package:kerala_wings/source/features/screens/profile/profile_setup_screen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/splash/splash_screen.dart';
+import 'package:kerala_wings/source/features/screens/verification/verification_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         title: 'Kerala Wings',
         debugShowCheckedModeBanner: false,
         home: LoginScreen()
+        // VerificationScreen()
       ),
     );
   }

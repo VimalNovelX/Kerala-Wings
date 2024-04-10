@@ -80,9 +80,9 @@ class NetworkHelper{
 
   // //all_issues_api
   Future<OtpModel?> getOtp(
-      {required BuildContext context}) async {
+      {required BuildContext context,phone}) async {
     http.Response? response;
-    response = await _getRequest(context: context, url: "${Urls.otpUrl}",header: {
+    response = await _getRequest(context: context, url: "${Urls.otpUrl}?phone=$phone",header: {
       "Content-Type": "application/json",
       "api-key":"a4690239-5216-4974-87f6-1588153d7a20"
 
@@ -152,25 +152,25 @@ class NetworkHelper{
         "Content-Type": "application/json",
         // "Authorization": "Bearer $token"
       }, body: {
-    "f_name":"soumya",
-    "phone":"95628268",
-    "driver_type":"cd",
-    "address":"sadsfsdf",
-    "licence_no":"45345345",
-    "dob":"1995/11/15",
-    "licence_exp":"2025/09/01",
-    "salary_type":"Monthly",
-    "districts":"dfsdfs",
-    "adhaar_no":"234232",
-    "h_phone":"9893487626",
-    "active_location":"",
-    "front_licence":"",
-    "back_licence":"",
-    "profile":"",
-    "blood_group":"",
+    "f_name":f_name,
+    "phone":phone,
+    "driver_type":driverType,
+    "address":address,
+    "licence_no":licenceNo,
+    "dob":dob,
+    "licence_exp":licenceExp,
+    "salary_type":salaryType,
+    "districts":districts,
+    "adhaar_no":adhaarNo,
+    "h_phone":hPhone,
+    "active_location":activeLocation,
+    "front_licence":frontLicence,
+    "back_licence":backLicence,
+    "profile":profile,
+    "blood_group":bloodGroup,
     "qus":"",
    // "qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
-    "father":"dsfdg",
+    "father":father,
  },);
     if (response.statusCode == 200) {
       return DriverRegisterModel.fromJson(jsonDecode(response.body));

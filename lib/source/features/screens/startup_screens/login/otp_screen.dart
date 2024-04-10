@@ -37,7 +37,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
   sendOtp(){
 
-    otpModel = NetworkHelper().getOtp(context: context);
+    otpModel = NetworkHelper().getOtp(context: context,phone:widget._phoneNumberController.text );
     return otpModel;
 
   }
