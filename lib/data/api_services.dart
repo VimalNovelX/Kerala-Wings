@@ -141,11 +141,60 @@ class NetworkHelper{
       {required BuildContext context,f_name,phone,
         driverType,address,licenceNo,dob,licenceExp,
         salaryType,districts,adhaarNo,hPhone,
-        activeLocation,frontLicence,backLicence,
+        activeLocation,required File frontLicence,required File backLicence,
         profile,bloodGroup,qus,father
       }) async {
     http.Response? response;
     response = await _postRequest(
+      context: context,
+      url: "${Urls.driverRegisterUrl}",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+    "f_name":f_name,
+    "phone":phone,
+    "driver_type":driverType,
+    "address":address,
+    "licence_no":licenceNo,
+    "dob":dob,
+    "licence_exp":licenceExp,
+    "salary_type":salaryType,
+    "districts":districts,
+    "adhaar_no":adhaarNo,
+    "h_phone":hPhone,
+    "active_location":activeLocation,
+    "front_licence":base64Encode(frontLicence.readAsBytesSync()),
+    "back_licence":base64Encode(backLicence.readAsBytesSync()),
+    "profile":profile,
+    "blood_group":bloodGroup,
+    "qus":"",
+   // "qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
+    "father":father,
+ },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return DriverRegisterModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+
+ Future<DriverRegisterModel?> driversRegisterApi(
+      {required BuildContext context,f_name,phone,
+        driverType,address,licenceNo,dob,licenceExp,
+        salaryType,districts,adhaarNo,hPhone,
+        activeLocation,frontLicence,backLicence,
+        profile,bloodGroup,qus,father
+      }) async {
+    http.Response? response;
+    response = await _multiPartPostRequest(
       context: context,
       url: "${Urls.driverRegisterUrl}",
       header: {
@@ -171,7 +220,7 @@ class NetworkHelper{
     "qus":"",
    // "qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
     "father":father,
- },);
+ }, fileList: [],);
     if (response.statusCode == 200) {
       return DriverRegisterModel.fromJson(jsonDecode(response.body));
     } else {

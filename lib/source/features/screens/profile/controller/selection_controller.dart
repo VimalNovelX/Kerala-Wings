@@ -12,6 +12,7 @@ import '../../../../../data/models/driver_register.dart';
 class SelectProfileController extends GetxController {
   RxString selectMethod = "Driver".obs;
   RxString selectSalary = "Daily".obs;
+  late List<String> stringList;
   RxBool isLoading =false.obs;
   TextEditingController nameController = TextEditingController();
   TextEditingController locController = TextEditingController();
@@ -60,7 +61,9 @@ class SelectProfileController extends GetxController {
       // Add only the first two images
       for (int i = 0; i < images.length && i < 2; i++) {
         imagesList.add(File(images[i].path));
+        drivingLicenceImages.add(File(images[i].path));
       }
+     // drivingLicenceImages = imagesList.map((file) => file.path).toList();
     }
   }
 
