@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:kerala_wings/data/api_services.dart';
+
+import '../../../../../data/models/driver_register.dart';
 
 class SelectProfileController extends GetxController {
   RxString selectMethod = "Driver".obs;
@@ -42,12 +45,26 @@ class SelectProfileController extends GetxController {
     selectSalary.value = selected;
   }
 
+  // void pickImages(RxList<File> imagesList) async {
+  //   List<XFile>? images = await ImagePicker().pickMultiImage();
+  //   if (images != null) {
+  //     imagesList.addAll(images.map((image) => File(image.path)));
+  //   }
+  // }
+
   void pickImages(RxList<File> imagesList) async {
     List<XFile>? images = await ImagePicker().pickMultiImage();
     if (images != null) {
-      imagesList.addAll(images.map((image) => File(image.path)));
+      // Clear the list before adding new images
+      imagesList.clear();
+      // Add only the first two images
+      for (int i = 0; i < images.length && i < 2; i++) {
+        imagesList.add(File(images[i].path));
+      }
     }
   }
+
+
 
   void removeImage(RxList<File> imagesList, int index) {
     imagesList.removeAt(index);
@@ -100,6 +117,19 @@ class SelectProfileController extends GetxController {
     }
   }
 
+Future<DriverRegisterModel?>? driverRegisterModel;
 
+
+  Future<DriverRegisterModel?>? registerDriver({context,activeLocation,address,adhaarNo,backLicence,bloodGroup,districts,dob,driverType,fName,father,frontLicence,hPhone,
+  licenceExp,licenceNo,phone,profile,qus,salaryType}){
+
+    driverRegisterModel = NetworkHelper().driverRegisterApi(context: context,activeLocation:activeLocation ,address:address ,adhaarNo: adhaarNo,
+      backLicence:backLicence ,bloodGroup:bloodGroup , districts:districts ,
+    dob:dob ,driverType: driverType,f_name:fName ,father:father ,frontLicence: frontLicence,hPhone:hPhone ,licenceExp:licenceExp ,
+      licenceNo:licenceNo ,phone: phone,profile: profile,qus: qus,salaryType:salaryType ,);
+
+    return driverRegisterModel;
+
+  }
 
 }

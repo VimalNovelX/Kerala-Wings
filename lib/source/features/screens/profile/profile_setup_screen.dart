@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:action_slider/action_slider.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -10,22 +9,20 @@ import 'package:kerala_wings/source/common_widgets/custom_dropdown.dart';
 import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
-import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
-import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
 import 'package:slide_to_act/slide_to_act.dart';
-import 'package:swipeable_button_view/swipeable_button_view.dart';
-
 import 'controller/selection_controller.dart';
 
 class ProfileSetupScreen extends StatelessWidget {
   ProfileSetupScreen({Key? key}) : super(key: key);
 
   final SelectProfileController controller = Get.put(SelectProfileController());
-  final List<String> _genders = ['Trivandrum', 'Kollam', 'Kannur', 'Kochi'];
+  final List<String> districts = ['Trivandrum', 'Kollam', 'Kannur', 'Kochi'];
+  final List<String> _bloodGroup = ['A +ve','B +ve','AB +ve','O +ve','A -ve','B -ve','AB -ve','O -ve',];
 
   final selectedValue = ''.obs;
-  String? selectGender;
+  String? selectedDistrict;
+  String? selectBloodGroup;
   final RxInt selectedRadio = (-1).obs;
   final _controller = ActionSliderController();
   RxBool isFinished = false.obs;
@@ -33,7 +30,11 @@ class ProfileSetupScreen extends StatelessWidget {
   final GlobalKey<SlideActionState> _key = GlobalKey();
 
   void onChanged(String? value) {
-    selectGender = value;
+    selectedDistrict = value;
+  }
+
+  void onChange(String? value) {
+    selectBloodGroup = value;
   }
 
   @override
@@ -56,7 +57,9 @@ class ProfileSetupScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CustomBackButton(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
                         const SizedBox(
                           height: 20,
@@ -262,7 +265,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                 width: width * .65,
                                 child: CustomTextField(
                                   hitText: "Aadhaar Number",
-                                  controller: controller.addressController,
+                                  controller: controller.adharController,
                                   obscureText: false,
                                   readOnly: false,
                                   isExpand: false,
@@ -277,19 +280,45 @@ class ProfileSetupScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                width: width * .25,
-                                child: CustomTextField(
-                                  hitText: "Eg Ab+",
-                                  obscureText: false,
-                                  readOnly: false,
-                                  isExpand: false,
-                                  validator: (name) {
-                                    if (name == null || name.isEmpty) {
-                                      return "please enter your Blood group";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
+                                width: width * .26,
+                                // child: CustomTextField(
+                                //   hitText: "Eg Ab+",
+                                //   obscureText: false,
+                                //   readOnly: false,
+                                //   isExpand: false,
+                                //   validator: (name) {
+                                //     if (name == null || name.isEmpty) {
+                                //       return "please enter your Blood group";
+                                //     } else {
+                                //       return null;
+                                //     }
+                                //   },
+                                // ),
+                                child: Obx(
+                                      () => CustomDropDown(
+                                    textClr: controller.selectMethod.value == "Driver"
+                                        ? cPrimaryColor
+                                        : cYellow,
+                                    hintText: "Eg:A+ve",
+                                    onChanged: onChange,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please select your location';
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    value: selectBloodGroup,
+                                    items: _bloodGroup.map((String gender) {
+                                      return DropdownMenuItem<String>(
+                                        value: gender,
+                                        child: Text(gender),
+                                      );
+                                    }).toList(),
+                                    color: controller.selectMethod.value == "Driver"
+                                        ? cPrimaryColor.withOpacity(.3)
+                                        : cYellow.withOpacity(.3),
+                                  ),
                                 ),
                               ),
                             ],
@@ -499,8 +528,8 @@ class ProfileSetupScreen extends StatelessWidget {
                                 return null;
                               }
                             },
-                            value: selectGender,
-                            items: _genders.map((String gender) {
+                            value: selectedDistrict,
+                            items: districts.map((String gender) {
                               return DropdownMenuItem<String>(
                                 value: gender,
                                 child: Text(gender),
@@ -638,14 +667,37 @@ class ProfileSetupScreen extends StatelessWidget {
                 ),
                 key: _key,
                 onSubmit: () {
-                  Future.delayed(
-                    const Duration(seconds: 1),
-                        () {
-                      Get.to( QuestionAnsweringScreen());
-                        }
+
+                  controller.registerDriver(phone: controller.homeMobController.text,
+                      profile: "",
+                  salaryType: "",
+                    qus: "",
+                    licenceNo: controller.licenceController.text,
+                    licenceExp: controller.licenceDateController.text,
+                    hPhone: controller.homeMobController.text,
+                    frontLicence: "",
+                    father: controller.fNameController.text,
+                    driverType: "",
+                    dob: controller.dobController.text,
+                    districts: selectedDistrict,
+                    bloodGroup: selectBloodGroup,
+                    backLicence: "",
+                    adhaarNo: controller.adharController.text,
+                    address: controller.addressController.text,
+                    activeLocation: controller.locController.text,
+                    context: context,
+                    fName: controller.fNameController.text,
                   );
+
+
+                  // Future.delayed(
+                  //   const Duration(seconds: 1),
+                  //       () {
+                  //     Get.to( QuestionAnsweringScreen());
+                  //       }
+                  // );
                   return null;
-                },
+                }, 
                 reversed: true,
               )
             ),

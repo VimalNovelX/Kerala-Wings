@@ -3,12 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:kerala_wings/data/api_services.dart';
+import 'package:kerala_wings/data/models/otp_model.dart';
 import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
+import 'package:kerala_wings/source/features/screens/profile/profile_setup_screen.dart';
+import 'package:kerala_wings/utils/toastUtil.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'otp_screen.dart';
+
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController _phoneNumberController = TextEditingController();
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,88 +72,7 @@ class LoginScreen extends StatelessWidget {
             InkWell(
               onTap: (){
                 Get.bottomSheet(
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      )
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Phone Number",
-                          style: TextStyle(
-                            color: cFont,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16
-                          ),
-                        ),
-                        SizedBox(height: 10,),
-                        CustomTextField(
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter your phone number";
-                            } else if (value.length != 10) {
-                              return "Enter valid number";
-                            }
-                            {
-                              return null;
-                            }
-                          },
-                          suffix: SizedBox(
-                            height: 50,
-                            width: 40,
-                            child: Center(
-                              child: Text(
-                                "+91",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600
-                                ),
-                              ),
-                            ),
-                          ),
-                         hitText: '0000000000', obscureText: false,
-                          isExpand: false,
-                          readOnly: false,
-                        ),
-                        SizedBox(height: 10,),
-
-                        ActionSlider.standard(
-                          toggleColor: Colors.white,
-                          backgroundColor:  cPrimaryColor,
-
-                          action: (controller) async {
-                            controller.loading();
-                            await Future.delayed(const Duration(seconds: 3));
-                            controller.success();
-                            await Future.delayed(const Duration(seconds: 1));
-                            controller.reset();
-                          },
-                          icon: SvgPicture.asset(iLoading),
-                          direction: TextDirection.rtl,
-                          child: const Text(
-                            'Confirm',
-
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
-                            textAlign: TextAlign.start,
-                          ),
-                        )
-
-
-                      ],
-                    ),
-                    // height: 100,
-                  )
+                  OtpBottomSheet(phoneNumberController: _phoneNumberController)
                 );
               },
               child: Container(
@@ -178,3 +113,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+
