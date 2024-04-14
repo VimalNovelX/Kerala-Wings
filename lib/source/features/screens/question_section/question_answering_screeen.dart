@@ -2,11 +2,15 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/source/common_widgets/back_button.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+
+import '../../../../data/models/questions_model.dart';
+import '../profile/controller/selection_controller.dart';
 
 class QuestionAnsweringScreen extends StatefulWidget {
   QuestionAnsweringScreen({Key? key}) : super(key: key);
@@ -17,20 +21,22 @@ class QuestionAnsweringScreen extends StatefulWidget {
 }
 
 class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
-  List<String> questions = [
-    "automatic car?",
-    "premium car?",
-    "Heavy Vehicle?",
-  ];
 
-  late List<String?> answers;
+  final SelectProfileController controller = Get.put(SelectProfileController());
+
+   List<String?>? answers =[];
+
   final GlobalKey<SlideActionState> _key = GlobalKey();
+Future<QuestionsModel?>? questionModel;
+  Map<int, String> transformedResponses = {};
 
 
   @override
   void initState() {
     super.initState();
-    answers = List.filled(questions.length, null);
+
+    questionModel = NetworkHelper().getQuestions(context: context);
+
   }
 
   @override
@@ -58,113 +64,141 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
         ],
       ),
       body: SafeArea(
-        child: ListView.builder(
-          padding: EdgeInsets.all(15),
-          itemCount: questions.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 15,),
+        child: FutureBuilder(
+          future: questionModel,
+          builder: (context,AsyncSnapshot<QuestionsModel?> snapshot) {
 
-                buildRichText(
-                    "Do you drive\n",
-                    questions[index],
-                    16,
-                    cPrimaryColor,
-                  Color(0xFF6B5D5D),
-                ),
-                SizedBox(height: 15,),
+           if(snapshot.hasData){
+             // Assuming the question numbers start from 2 and go up to 9
+             for (int i = 0; i < snapshot.data!.data!.length; i++) {
+               int questionNumber = i + 1;
+               transformedResponses[questionNumber] = answers!.length > i ? answers![i] ?? "" : "";
+              // transformedResponses[questionNumber] = answers![i].toString();
+             }
 
-                Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: (){
-                              setState(() {
-                                answers[index] = 'Yes';
-                              });
-                        },
-                        child: Row(
-                          children: [
-                            Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 15,
-                                  backgroundColor: Colors.grey.shade400,
-                                ),
-                                answers[index] == 'Yes'?     Positioned(
-                                  right: -3,
-                                    top: -2,
-                                    child:
-                                Image.asset(iTick)
-                                ) : SizedBox()
-                              ],
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "Yes",
-                              style: TextStyle(
-                                fontSize: 16,
-                                  color: answers[index] == 'Yes'
-                                      ? cPrimaryColor : Colors.grey,
-                                fontWeight: FontWeight.w600
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 20,),
-                      InkWell(
-                        onTap: (){
-                              setState(() {
-                                answers[index] = 'No';
-                              });
-                        },
-                        child: Row(
-                          children: [
-                            Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 15,
-                                  backgroundColor: Colors.grey.shade400,
-                                ),
-                                answers[index] == 'No'?     Positioned(
-                                    right: -3,
-                                    top: -2,
-                                    child:
-                                    Image.asset(iTick)
-                                ) : SizedBox()
-                              ],
-                            ),
 
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "No",
-                              style: TextStyle(
-                                fontSize: 16,
-                                      color: answers[index] == 'No'
-                                          ? cPrimaryColor : Colors.grey,
+             // answers = List.filled(snapshot.data!.data!.length, null);
+             return ListView.builder(
+               padding: EdgeInsets.all(15),
+               itemCount: snapshot.data!.data!.length,
+               itemBuilder: (BuildContext context, int index) {
+                 if (answers!.length <= index) {
+                   // If not, add null values to the answers list until it has enough elements
+                   while (answers!.length <= index) {
+                     answers!.add(null);
+                   }
+                 }
+                 return Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     SizedBox(height: 15,),
 
-                                fontWeight: FontWeight.w600
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                SizedBox(height: 15,),
-                DottedLine(
-                  dashColor: Colors.grey.shade400,
-                )
-              ],
-            );
-          },
+                     buildRichText(
+                       snapshot.data!.data![index].qus.toString(),
+                       "",
+                       16,
+                       cPrimaryColor,
+                       Color(0xFF6B5D5D),
+                     ),
+                     SizedBox(height: 15,),
+
+                     Row(
+                       mainAxisSize: MainAxisSize.min,
+                       children: [
+                         InkWell(
+                           onTap: (){
+                             setState(() {
+                               answers![index] = 'Yes';
+                             });
+                             print(answers);                           },
+                           child: Row(
+                             children: [
+                               Stack(
+                                 children: [
+                                   CircleAvatar(
+                                     radius: 15,
+                                     backgroundColor: Colors.grey.shade400,
+                                   ),
+                                   answers![index] == 'Yes'?     Positioned(
+                                       right: -3,
+                                       top: -2,
+                                       child:
+                                       Image.asset(iTick)
+                                   ) : SizedBox()
+                                 ],
+                               ),
+                               SizedBox(
+                                 width: 8,
+                               ),
+                               Text(
+                                 "Yes",
+                                 style: TextStyle(
+                                     fontSize: 16,
+                                     color: answers![index] == 'Yes'
+                                         ? cPrimaryColor : Colors.grey,
+                                     fontWeight: FontWeight.w600
+                                 ),
+                               )
+                             ],
+                           ),
+                         ),
+                         SizedBox(width: 20,),
+                         InkWell(
+                           onTap: (){
+                             setState(() {
+                               answers![index] = 'No';
+                             });
+                             print(answers);
+                           },
+                           child: Row(
+                             children: [
+                               Stack(
+                                 children: [
+                                   CircleAvatar(
+                                     radius: 15,
+                                     backgroundColor: Colors.grey.shade400,
+                                   ),
+                                   answers![index] == 'No'?     Positioned(
+                                       right: -3,
+                                       top: -2,
+                                       child:
+                                       Image.asset(iTick)
+                                   ) : SizedBox()
+                                 ],
+                               ),
+
+                               SizedBox(
+                                 width: 8,
+                               ),
+                               Text(
+                                 "No",
+                                 style: TextStyle(
+                                     fontSize: 16,
+                                     color: answers![index] == 'No'
+                                         ? cPrimaryColor : Colors.grey,
+
+                                     fontWeight: FontWeight.w600
+                                 ),
+                               )
+                             ],
+                           ),
+                         ),
+                       ],
+                     ),
+                     SizedBox(height: 15,),
+                     DottedLine(
+                       dashColor: Colors.grey.shade400,
+                     )
+                   ],
+                 );
+               },
+             );
+           }else if(snapshot.data==ConnectionState.waiting){
+             return Center(child: CircularProgressIndicator(),);
+           }else{
+             return Center(child: Text("Please Try again"),);
+           }
+          }
         ),
       ),
         bottomNavigationBar: Padding(
@@ -184,6 +218,35 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
                   ),
                   key: _key,
                   onSubmit: () {
+
+
+
+
+
+                    // controller.registerDriver(phone: controller.homeMobController.text,
+                    //     profile: "",
+                    // salaryType: "",
+                    //   qus: "",
+                    //   licenceNo: controller.licenceController.text,
+                    //   licenceExp: controller.licenceDateController.text,
+                    //   hPhone: controller.homeMobController.text,
+                    //   frontLicence: ""/*controller.drivingLicenceImages[0]*/,
+                    //   father: controller.fNameController.text,
+                    //   driverType: "",
+                    //   dob: controller.dobController.text,
+                    //   //districts: selectedDistrict,
+                    //   districts: transformedResponses,
+                    //   //bloodGroup: selectBloodGroup,
+                    //   backLicence: /*controller.drivingLicenceImages[1]*/"",
+                    //   adhaarNo: controller.adharController.text,
+                    //   address: controller.addressController.text,
+                    //   activeLocation: controller.locController.text,
+                    //   context: context,
+                    //
+                    //   fName: controller.fNameController.text,
+                    // );
+
+
                     Future.delayed(
                         const Duration(seconds: 1),
                             () {
@@ -199,7 +262,12 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
 
 
     );
+
+
+
+
   }
+
 
   RichText buildRichText(String text1, String text2, double size, color,color1) {
     return RichText(
@@ -220,4 +288,9 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
           ]),
     );
   }
+
+
 }
+
+
+

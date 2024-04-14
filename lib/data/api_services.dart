@@ -6,6 +6,7 @@ import 'package:kerala_wings/data/models/driver_register.dart';
 import 'package:kerala_wings/data/models/otp_model.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
+import 'models/questions_model.dart';
 
 
 
@@ -103,6 +104,37 @@ class NetworkHelper{
       return null;
     }
   }
+   //get_question_api
+  Future<QuestionsModel?> getQuestions(
+      {required BuildContext context,phone}) async {
+    http.Response? response;
+    response = await _postRequest(context: context, url: Urls.getQuestionsUrl,header: {
+      "Content-Type": "application/json",
+      "api-key":"a4690239-5216-4974-87f6-1588153d7a20"
+
+      // "Authorization": "Bearer $token"
+    }, body: {
+    "name":"questions",
+      "where":"driver_type",
+      "value":"cd"
+
+
+    }, );
+    /*_postRequest(
+      context: context,
+      url: "${Urls.getAllIssuesUrl}",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {},);*/
+    if (response!.statusCode == 200) {
+      return QuestionsModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
 
 
 
@@ -168,8 +200,8 @@ class NetworkHelper{
     "back_licence":base64Encode(backLicence.readAsBytesSync()),
     "profile":profile,
     "blood_group":bloodGroup,
-    "qus":"",
-   // "qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
+    "qus":jsonEncode(qus),
+  //"qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
     "father":father,
  },);
     if (response.statusCode == 200) {

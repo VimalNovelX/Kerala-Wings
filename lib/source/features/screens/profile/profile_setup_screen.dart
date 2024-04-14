@@ -10,6 +10,7 @@ import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
+import 'package:kerala_wings/utils/toastUtil.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'controller/selection_controller.dart';
 
@@ -655,7 +656,7 @@ class ProfileSetupScreen extends StatelessWidget {
             () =>  SizedBox(height: 55,
               child: SlideAction(
                 borderRadius: 50,
-                text: "Request Activation",
+                text: "Next",
                 sliderButtonIconPadding: 12,
                 sliderButtonIcon: SvgPicture.asset(iLoading),
                 height: 55,
@@ -668,35 +669,49 @@ class ProfileSetupScreen extends StatelessWidget {
                 key: _key,
                 onSubmit: () {
 
-                  controller.registerDriver(phone: controller.homeMobController.text,
-                      profile: "",
-                  salaryType: "",
-                    qus: "",
-                    licenceNo: controller.licenceController.text,
-                    licenceExp: controller.licenceDateController.text,
-                    hPhone: controller.homeMobController.text,
-                    frontLicence: controller.drivingLicenceImages[0],
-                    father: controller.fNameController.text,
-                    driverType: "",
-                    dob: controller.dobController.text,
-                    districts: selectedDistrict,
-                    bloodGroup: selectBloodGroup,
-                    backLicence: controller.drivingLicenceImages[1],
-                    adhaarNo: controller.adharController.text,
-                    address: controller.addressController.text,
-                    activeLocation: controller.locController.text,
-                    context: context,
-                    fName: controller.fNameController.text,
+
+                  print( "nameController=>${controller.nameController.text}\n"
+                      "homeMobController=>${controller.homeMobController.text}\n"
+                      "licenceController=>${controller.licenceController.text}\n"
+                      "licenceDateController=>${controller.licenceDateController.text}\n"
+                     "fNameController=>${controller.fNameController.text}\n"
+                      "dobController=>${controller.dobController.text}\n"
+                      "adharController=>${controller.adharController.text}\n"
+                     "addressController=>${ controller.addressController.text}\n"
+                      "locController=>${controller.locController.text}\n"
+                      "selectBloodGroup=>$selectBloodGroup\n selectedDistrict=>$selectedDistrict");
+
+
+
+
+
+
+                if(
+                controller.nameController.text.isNotEmpty&&
+                controller.homeMobController.text.isNotEmpty&&controller.licenceController.text.isNotEmpty&&
+                    controller.licenceDateController.text.isNotEmpty&&
+                    controller.dobController.text.isNotEmpty&&controller.adharController.text.isNotEmpty&&
+                    controller.addressController.text.isNotEmpty&&controller.locController.text.isNotEmpty&&
+
+                    selectBloodGroup!=null && selectedDistrict!=null
+
+
+
+                )  {
+               return   Future.delayed(
+                      const Duration(seconds: 1),
+                          () {
+                        Get.to( QuestionAnsweringScreen());
+                      }
                   );
+                }else{
+                  selectBloodGroup==null ? ToastUtil.show("Please select Blood Group"):
+                selectedDistrict==null?ToastUtil.show("Please select district"):ToastUtil.show("Please fill all required fields")
+                  ;
 
+                   return null;
+                }
 
-                  // Future.delayed(
-                  //   const Duration(seconds: 1),
-                  //       () {
-                  //     Get.to( QuestionAnsweringScreen());
-                  //       }
-                  // );
-                  return null;
                 }, 
                 reversed: true,
               )
