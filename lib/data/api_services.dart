@@ -100,10 +100,12 @@ class NetworkHelper{
       }, body: {},);*/
     if (response!.statusCode == 200) {
       var data = jsonDecode(response.body);
-      // drivercode = data['data']['driver']['code'];
-      // name = data['data']['driver']['f_name'];
-      // driverPhone = data['data']['driver']['phone'];
-      // driverType = data['data']['driver']['type'];
+      if(data['data']['driver']!=null){
+        drivercode = data['data']['driver']['code'];
+        name = data['data']['driver']['f_name'];
+        driverPhone = data['data']['driver']['phone'];
+        driverType = data['data']['driver']['type'];
+      }
       return OtpModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
@@ -237,6 +239,31 @@ class NetworkHelper{
       }, body: {
     "driver_id":driver_id.toString(),
       "type":type
+ },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return DriverViewTripDetailsModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+ Future<DriverViewTripDetailsModel?> startDriverTripApi(
+      {required BuildContext context,bookingId, tripStartBy
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: "${Urls.startDriverTripUrl}",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+    "booking_id":bookingId.toString(),
+      "trip_start_by":tripStartBy
  },);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

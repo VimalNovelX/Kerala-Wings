@@ -6,6 +6,7 @@ class Urls {
   static String getQuestionsUrl = "$baseUrl/get_table_condition";
   static String driverRegisterUrl = "$baseUrl/driverRegister";
   static String driverViewTripDetailsUrl = "$baseUrl/driverViewTripDetails";
+  static String startDriverTripUrl = "$baseUrl/startDrivertrip";
 
 
 }

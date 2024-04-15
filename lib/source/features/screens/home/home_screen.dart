@@ -4,6 +4,7 @@ import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:kerala_wings/data/api_services.dart';
+import 'package:kerala_wings/data/models/otp_model.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/tripcard_widget.dart';
@@ -11,7 +12,8 @@ import 'package:kerala_wings/source/features/screens/home/widgets/tripcard_widge
 import '../../../../data/models/driver_view_trip_model.dart';
 
 class HomeScreen extends StatefulWidget {
-   HomeScreen({Key? key}) : super(key: key);
+  final Future<OtpModel?>? otpModel;
+   HomeScreen({Key? key, this.otpModel, }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
    final MyController controller = Get.put(MyController());
-
+Future<OtpModel?>? otPModel;
   TabController? _tabController;
 
   RxInt selectedIndex = 0.obs;
@@ -36,10 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: 125,type: "");
-  }
+
+
+   }
 
   @override
   Widget build(BuildContext context) {
+     otPModel =widget.otpModel ;
     var width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -54,180 +59,195 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 15
-                ),
-                padding: const EdgeInsets.only(
-                  top: 10
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15)
-                  ),
-                ),
-                child: ListTile(
-                  horizontalTitleGap: 8,
-                  leading: const CircleAvatar(
-                    radius: 25,
-                  ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: width*.38,
-                            child: const Text(
-                                "David Sanders",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: cFont
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-
-                            ),
+            FutureBuilder(
+                future: otPModel,
+                builder: (context, AsyncSnapshot<OtpModel?> snapshot) {
+                  if(snapshot.hasData){
+                    return Column(children: [
+                      Container(
+                        margin: const EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                            top: 15
+                        ),
+                        padding: const EdgeInsets.only(
+                            top: 10
+                        ),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15),
+                              topLeft: Radius.circular(15)
                           ),
-                          SizedBox(
-                            width: width*.38,
-                            child: DottedLine(
-                              dashColor: Colors.grey.shade300,
-                            ),
+                        ),
+                        child: ListTile(
+                          horizontalTitleGap: 8,
+                          leading: const CircleAvatar(
+                            radius: 25,
                           ),
-                          RichText(
-                              text: TextSpan(
-                                text: "A+",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: cYellow,
-                                  fontWeight: FontWeight.w600
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: " ",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey.shade400,
-                                    ),),
-                                  TextSpan(
-                                  text: "Driver",
-                                  style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey.shade400,
-                                  ),)
-                                ]
-                              )
-                          )
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 3),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEBF4EC),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            child: const Center(
-                              child: Text(
-                                  "ACTIVE",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: cGreen,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 3,),
-                          Row(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              RatingStars(
-                                valueLabelVisibility: false,
-                                starCount: 5,
-                                starColor: cYellow,
-                                starSize: 10,
-                                value: 4,
-                                starOffColor: cFont.withOpacity(.8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: width*.38,
+                                    child:  Text(
+                                     snapshot.data!.data!.driver!.fName!.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: cFont
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
 
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: width*.38,
+                                    child: DottedLine(
+                                      dashColor: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                  RichText(
+                                      text: TextSpan(
+                                          text: snapshot.data!.data!.driver!.bloodGroup!.toString(),
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              color: cYellow,
+                                              fontWeight: FontWeight.w600
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: " ",
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.grey.shade400,
+                                              ),),
+                                            TextSpan(
+                                              text: "Driver",
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.grey.shade400,
+                                              ),)
+                                          ]
+                                      )
+                                  )
+                                ],
                               ),
-                              const SizedBox(width: 3,),
-                              const Text(
-                                "4.0",
-                                style: TextStyle(
-                                  color: cYellow,
-                                  fontSize: 12
-                                ),
-                              )
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 3),
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFFEBF4EC),
+                                        borderRadius: BorderRadius.circular(15)
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        "ACTIVE",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: cGreen,
+                                            fontWeight: FontWeight.w500
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 3,),
+                                  Row(
+                                    children: [
+                                      RatingStars(
+                                        valueLabelVisibility: false,
+                                        starCount: 5,
+                                        starColor: cYellow,
+                                        starSize: 10,
+                                        value: 4,
+                                        starOffColor: cFont.withOpacity(.8),
+
+                                      ),
+                                      const SizedBox(width: 3,),
+                                      const Text(
+                                        "4.0",
+                                        style: TextStyle(
+                                            color: cYellow,
+                                            fontSize: 12
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ],
-                          )
-                        ],
+                          ),
+
+                        ),
+
+
                       ),
-                    ],
-                  ),
-
-                ),
-
-
-              ),
-              Container(
-                margin: const EdgeInsets.only(
-                  right: 15,
-                  left: 15,
-                  bottom: 10
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15)
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      const Color(0xFF183E51).withOpacity(.8),
-                      const Color(0xFF917F7F).withOpacity(.5),
-                      const Color(0xFF543F3F).withOpacity(.9),
-                      Colors.black
+                      Container(
+                        margin: const EdgeInsets.only(
+                            right: 15,
+                            left: 15,
+                            bottom: 10
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(15),
+                              bottomRight: Radius.circular(15)
+                          ),
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              const Color(0xFF183E51).withOpacity(.8),
+                              const Color(0xFF917F7F).withOpacity(.5),
+                              const Color(0xFF543F3F).withOpacity(.9),
+                              Colors.black
 
 
-                    ],
-                  ),
-                ),
-                child: buildRow(),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 15
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
+                            ],
+                          ),
+                        ),
+                        child: buildRow(),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 15
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
 
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      const Color(0xFF183E51).withOpacity(.8),
-                      const Color(0xFF917F7F).withOpacity(.5),
-                      const Color(0xFF543F3F).withOpacity(.9),
-                      Colors.black
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              const Color(0xFF183E51).withOpacity(.8),
+                              const Color(0xFF917F7F).withOpacity(.5),
+                              const Color(0xFF543F3F).withOpacity(.9),
+                              Colors.black
 
 
-                    ],
-                  ),
+                            ],
+                          ),
 
-                ),
-                child: buildRow(),
+                        ),
+                        child: buildRow(),
+                      ),
+
+
+                    ],);
+                  }else if(snapshot.connectionState==ConnectionState.waiting){
+                    return Center(child: CircularProgressIndicator(),);
+                  } else {
+                    return Center(child: Text("Please Try Again"),);
+                  }
+                }
               ),
               Expanded(
                   child: DefaultTabController(

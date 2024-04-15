@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:in_app_notification/in_app_notification.dart';
+import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 
 import '../../../../../data/api_services.dart';
 import '../../../../../data/models/otp_model.dart';
+import '../../../../../utils/constants.dart';
 import '../../../../../utils/toastUtil.dart';
 import '../../../../common_widgets/textfield.dart';
 import '../../../../constants/colors.dart';
@@ -198,7 +200,11 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
               widget._phoneNumberController.text.isNotEmpty? controller.success():controller.reset();
 
 
-              widget._phoneNumberController.text.isNotEmpty?  Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen())):
+              drivercode!=null &&  widget._phoneNumberController.text.isNotEmpty?
+
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel)), (route) => false):
+              widget._phoneNumberController.text.isNotEmpty?
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen())):
               ToastUtil.show("Please enter phone number!!!");
             },
             icon: SvgPicture.asset(iLoading),
