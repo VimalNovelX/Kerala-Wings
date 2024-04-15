@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -25,6 +26,8 @@ class SelectProfileController extends GetxController {
   TextEditingController homeMobController = TextEditingController();
   TextEditingController licenceDateController = TextEditingController();
   RxList<File> drivingLicenceImages = <File>[].obs;
+  Rx<File?> frontFile = Rx<File?>(null);
+  Rx<File?> backFile = Rx<File?>(null);
   Rx<File?> imageFile = Rx<File?>(null);
   final formKey = GlobalKey<FormState>();
   RxBool areFilled = false.obs;
@@ -61,7 +64,10 @@ class SelectProfileController extends GetxController {
       // Add only the first two images
       for (int i = 0; i < images.length && i < 2; i++) {
         imagesList.add(File(images[i].path));
-        drivingLicenceImages.add(File(images[i].path));
+        drivingLicenceImages.add(File(images[i].path)
+        );
+        frontFile.value = (File(images[0].path));
+        backFile.value = (File(images[1].path));
       }
      // drivingLicenceImages = imagesList.map((file) => file.path).toList();
     }
@@ -91,6 +97,7 @@ class SelectProfileController extends GetxController {
   }
 
   DateTime selectedDate = DateTime.now();
+  DateTime selectedExpDate = DateTime.now();
 
 
   Future<void> selectDate(BuildContext context) async {
@@ -110,29 +117,63 @@ class SelectProfileController extends GetxController {
   Future<void> selectExpDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
+      initialDate: selectedExpDate,
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      licenceDateController.text = DateFormat('yyyy-MM-dd').format(selectedDate); // Update text field
+    if (picked != null && picked != selectedExpDate) {
+      selectedExpDate = picked;
+      licenceDateController.text = DateFormat('yyyy-MM-dd').format(selectedExpDate); // Update text field
     }
   }
 
+
+ void registerDriver(context,qusDetails) async {
+   try {
+     NetworkHelper().driverRegistrationApi(
+         context: context,
+         name: nameController.text,
+         phone: "9244445571",
+         driverType: "cd",
+         address: addressController.text,
+         licence: licenceController.text,
+         dob: dobController.text,
+         licenceExp: licenceDateController.text,
+         sType: "Monthly",
+         district: "kollam",
+         adhaar: adharController.text,
+         hPhone: homeMobController.text,
+         location: "cdcndsncd",
+         bGroup: bloodGController.text,
+         father: fNameController.text,
+         photoName: imageFile.value != null ? imageFile.value!.path.split("/").last : "",
+         photos: imageFile.value != null ? imageFile.value!.path : "",
+         licenceBackName: backFile.value != null ? backFile.value!.path.split("/").last : "",
+         licenceBack: backFile.value != null ? backFile.value!.path : "",
+         licenceFrontName: frontFile.value != null ? frontFile.value!.path.split("/").last : "",
+         licenceFront: frontFile.value != null ? frontFile.value!.path : "",
+         qus: qusDetails
+     );
+   } catch (e){
+     print("Error-------$e");
+   }
+  }
+
+
+
 Future<DriverRegisterModel?>? driverRegisterModel;
 
-
-  Future<DriverRegisterModel?>? registerDriver({context,activeLocation,address,adhaarNo,backLicence,bloodGroup,districts,dob,driverType,fName,father,frontLicence,hPhone,
-  licenceExp,licenceNo,phone,profile,qus,salaryType}){
-
-    driverRegisterModel = NetworkHelper().driverRegisterApi(context: context,activeLocation:activeLocation ,address:address ,adhaarNo: adhaarNo,
-      backLicence:backLicence ,bloodGroup:bloodGroup , districts:districts ,
-    dob:dob ,driverType: driverType,f_name:fName ,father:father ,frontLicence: frontLicence,hPhone:hPhone ,licenceExp:licenceExp ,
-      licenceNo:licenceNo ,phone: phone,profile: profile,qus: qus,salaryType:salaryType ,);
-
-    return driverRegisterModel;
-
-  }
+  //
+  // Future<DriverRegisterModel?>? registerDriver({context,activeLocation,address,adhaarNo,backLicence,bloodGroup,districts,dob,driverType,fName,father,frontLicence,hPhone,
+  // licenceExp,licenceNo,phone,profile,qus,salaryType}){
+  //
+  //   driverRegisterModel = NetworkHelper().driverRegisterApi(context: context,activeLocation:activeLocation ,address:address ,adhaarNo: adhaarNo,
+  //     backLicence:backLicence ,bloodGroup:bloodGroup , districts:districts ,
+  //   dob:dob ,driverType: driverType,f_name:fName ,father:father ,frontLicence: frontLicence,hPhone:hPhone ,licenceExp:licenceExp ,
+  //     licenceNo:licenceNo ,phone: phone,profile: profile,qus: qus,salaryType:salaryType ,);
+  //
+  //   return driverRegisterModel;
+  //
+  // }
 
 }

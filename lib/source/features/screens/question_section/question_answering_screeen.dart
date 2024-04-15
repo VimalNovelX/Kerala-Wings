@@ -24,10 +24,10 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
 
   final SelectProfileController controller = Get.put(SelectProfileController());
 
-   List<String?>? answers =[];
+  List<String?>? answers =[];
 
   final GlobalKey<SlideActionState> _key = GlobalKey();
-Future<QuestionsModel?>? questionModel;
+  Future<QuestionsModel?>? questionModel;
   Map<int, String> transformedResponses = {};
 
 
@@ -41,227 +41,238 @@ Future<QuestionsModel?>? questionModel;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CustomBackButton(),
-        ),
-        actions: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            margin:
-            const EdgeInsets.only(top: 15, bottom: 15, right: 15),
-            decoration: BoxDecoration(
-                color: cPrimaryColor.withOpacity(.2),
-                borderRadius: BorderRadius.circular(15)),
-            child: Center(
-                child: buildRichText(
-                    "DRIVER ", "QUESTIONS", 12, Colors.white,
-                  cPrimaryColor
-                )),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: FutureBuilder(
-          future: questionModel,
-          builder: (context,AsyncSnapshot<QuestionsModel?> snapshot) {
-
-           if(snapshot.hasData){
-             // Assuming the question numbers start from 2 and go up to 9
-             for (int i = 0; i < snapshot.data!.data!.length; i++) {
-               int questionNumber = i + 1;
-               transformedResponses[questionNumber] = answers!.length > i ? answers![i] ?? "" : "";
-              // transformedResponses[questionNumber] = answers![i].toString();
-             }
-
-
-             // answers = List.filled(snapshot.data!.data!.length, null);
-             return ListView.builder(
-               padding: EdgeInsets.all(15),
-               itemCount: snapshot.data!.data!.length,
-               itemBuilder: (BuildContext context, int index) {
-                 if (answers!.length <= index) {
-                   // If not, add null values to the answers list until it has enough elements
-                   while (answers!.length <= index) {
-                     answers!.add(null);
-                   }
-                 }
-                 return Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     SizedBox(height: 15,),
-
-                     buildRichText(
-                       snapshot.data!.data![index].qus.toString(),
-                       "",
-                       16,
-                       cPrimaryColor,
-                       Color(0xFF6B5D5D),
-                     ),
-                     SizedBox(height: 15,),
-
-                     Row(
-                       mainAxisSize: MainAxisSize.min,
-                       children: [
-                         InkWell(
-                           onTap: (){
-                             setState(() {
-                               answers![index] = 'Yes';
-                             });
-                             print(answers);                           },
-                           child: Row(
-                             children: [
-                               Stack(
-                                 children: [
-                                   CircleAvatar(
-                                     radius: 15,
-                                     backgroundColor: Colors.grey.shade400,
-                                   ),
-                                   answers![index] == 'Yes'?     Positioned(
-                                       right: -3,
-                                       top: -2,
-                                       child:
-                                       Image.asset(iTick)
-                                   ) : SizedBox()
-                                 ],
-                               ),
-                               SizedBox(
-                                 width: 8,
-                               ),
-                               Text(
-                                 "Yes",
-                                 style: TextStyle(
-                                     fontSize: 16,
-                                     color: answers![index] == 'Yes'
-                                         ? cPrimaryColor : Colors.grey,
-                                     fontWeight: FontWeight.w600
-                                 ),
-                               )
-                             ],
-                           ),
-                         ),
-                         SizedBox(width: 20,),
-                         InkWell(
-                           onTap: (){
-                             setState(() {
-                               answers![index] = 'No';
-                             });
-                             print(answers);
-                           },
-                           child: Row(
-                             children: [
-                               Stack(
-                                 children: [
-                                   CircleAvatar(
-                                     radius: 15,
-                                     backgroundColor: Colors.grey.shade400,
-                                   ),
-                                   answers![index] == 'No'?     Positioned(
-                                       right: -3,
-                                       top: -2,
-                                       child:
-                                       Image.asset(iTick)
-                                   ) : SizedBox()
-                                 ],
-                               ),
-
-                               SizedBox(
-                                 width: 8,
-                               ),
-                               Text(
-                                 "No",
-                                 style: TextStyle(
-                                     fontSize: 16,
-                                     color: answers![index] == 'No'
-                                         ? cPrimaryColor : Colors.grey,
-
-                                     fontWeight: FontWeight.w600
-                                 ),
-                               )
-                             ],
-                           ),
-                         ),
-                       ],
-                     ),
-                     SizedBox(height: 15,),
-                     DottedLine(
-                       dashColor: Colors.grey.shade400,
-                     )
-                   ],
-                 );
-               },
-             );
-           }else if(snapshot.data==ConnectionState.waiting){
-             return Center(child: CircularProgressIndicator(),);
-           }else{
-             return Center(child: Text("Please Try again"),);
-           }
-          }
-        ),
-      ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0,right: 15,left: 15),
-          child:  SizedBox(height: 55,
-                child: SlideAction(
-                  borderRadius: 50,
-                  text: "Request Activation",
-                  sliderButtonIconPadding: 12,
-                  sliderButtonIcon: SvgPicture.asset(iLoading),
-                  height: 55,
-                  outerColor:  cPrimaryColor,
-                  textStyle: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500
-                  ),
-                  key: _key,
-                  onSubmit: () {
-
-
-
-
-
-                    // controller.registerDriver(phone: controller.homeMobController.text,
-                    //     profile: "",
-                    // salaryType: "",
-                    //   qus: "",
-                    //   licenceNo: controller.licenceController.text,
-                    //   licenceExp: controller.licenceDateController.text,
-                    //   hPhone: controller.homeMobController.text,
-                    //   frontLicence: ""/*controller.drivingLicenceImages[0]*/,
-                    //   father: controller.fNameController.text,
-                    //   driverType: "",
-                    //   dob: controller.dobController.text,
-                    //   //districts: selectedDistrict,
-                    //   districts: transformedResponses,
-                    //   //bloodGroup: selectBloodGroup,
-                    //   backLicence: /*controller.drivingLicenceImages[1]*/"",
-                    //   adhaarNo: controller.adharController.text,
-                    //   address: controller.addressController.text,
-                    //   activeLocation: controller.locController.text,
-                    //   context: context,
-                    //
-                    //   fName: controller.fNameController.text,
-                    // );
-
-
-                    Future.delayed(
-                        const Duration(seconds: 1),
-                            () {
-                          Get.to( HomeScreen());
+    return FutureBuilder(
+        future: questionModel,
+        builder: (context,AsyncSnapshot<QuestionsModel?> snapshot){
+          if(snapshot.hasData){
+                        // Assuming the question numbers start from 2 and go up to 9
+                        for (int i = 0; i < snapshot.data!.data!.length; i++) {
+                          int questionNumber = i + 1;
+                          transformedResponses[questionNumber] = answers!.length > i ? answers![i] ?? "" : "";
+                          // transformedResponses[questionNumber] = answers![i].toString();
                         }
-                    );
-                    return null;
-                  },
-                  reversed: true,
-                )
-            ),
-          ),
 
 
+                        // answers = List.filled(snapshot.data!.data!.length, null);
+            return Scaffold(
+                appBar: AppBar(
+                  leading: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomBackButton(
+                      onTap: (){
+                        Get.back();
+                      },
+                    ),
+                  ),
+                  actions: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      margin:
+                      const EdgeInsets.only(top: 15, bottom: 15, right: 15),
+                      decoration: BoxDecoration(
+                          color: cPrimaryColor.withOpacity(.2),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Center(
+                          child: buildRichText(
+                              "DRIVER ", "QUESTIONS", 12, Colors.white,
+                              cPrimaryColor
+                          )),
+                    )
+                  ],
+                ),
+              body: SafeArea(
+                child:
+                             ListView.builder(
+                              padding: EdgeInsets.all(15),
+                              itemCount: snapshot.data!.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                if (answers!.length <= index) {
+                                  // If not, add null values to the answers list until it has enough elements
+                                  while (answers!.length <= index) {
+                                    answers!.add(null);
+                                  }
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 15,),
+
+                                    buildRichText(
+                                      snapshot.data!.data![index].qus.toString(),
+                                      "",
+                                      16,
+                                      cPrimaryColor,
+                                      Color(0xFF6B5D5D),
+                                    ),
+                                    SizedBox(height: 15,),
+
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        InkWell(
+                                          onTap: (){
+                                            setState(() {
+                                              answers![index] = 'Yes';
+                                            });
+                                            print(answers);                           },
+                                          child: Row(
+                                            children: [
+                                              Stack(
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 15,
+                                                    backgroundColor: Colors.grey.shade400,
+                                                  ),
+                                                  answers![index] == 'Yes'?     Positioned(
+                                                      right: -3,
+                                                      top: -2,
+                                                      child:
+                                                      Image.asset(iTick)
+                                                  ) : SizedBox()
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: answers![index] == 'Yes'
+                                                        ? cPrimaryColor : Colors.grey,
+                                                    fontWeight: FontWeight.w600
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 20,),
+                                        InkWell(
+                                          onTap: (){
+                                            setState(() {
+                                              answers![index] = 'No';
+                                            });
+                                            print(answers);
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Stack(
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 15,
+                                                    backgroundColor: Colors.grey.shade400,
+                                                  ),
+                                                  answers![index] == 'No'?     Positioned(
+                                                      right: -3,
+                                                      top: -2,
+                                                      child:
+                                                      Image.asset(iTick)
+                                                  ) : SizedBox()
+                                                ],
+                                              ),
+
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Text(
+                                                "No",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: answers![index] == 'No'
+                                                        ? cPrimaryColor : Colors.grey,
+
+                                                    fontWeight: FontWeight.w600
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 15,),
+                                    DottedLine(
+                                      dashColor: Colors.grey.shade400,
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
+              ),
+                bottomNavigationBar: Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0,right: 15,left: 15),
+                  child:  SizedBox(height: 55,
+                      child: SlideAction(
+                        borderRadius: 50,
+                        text: "Request Activation",
+                        sliderButtonIconPadding: 12,
+                        sliderButtonIcon: SvgPicture.asset(iLoading),
+                        height: 55,
+                        outerColor:  cPrimaryColor,
+                        textStyle: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500
+                        ),
+                        key: _key,
+                        onSubmit: () {
+
+                          print("--------------$transformedResponses");
+
+
+                          controller.registerDriver(context, transformedResponses);
+
+
+
+
+
+                          // controller.registerDriver(phone: controller.homeMobController.text,
+                          //     profile: "",
+                          // salaryType: "",
+                          //   qus: "",
+                          //   licenceNo: controller.licenceController.text,
+                          //   licenceExp: controller.licenceDateController.text,
+                          //   hPhone: controller.homeMobController.text,
+                          //   frontLicence: ""/*controller.drivingLicenceImages[0]*/,
+                          //   father: controller.fNameController.text,
+                          //   driverType: "",
+                          //   dob: controller.dobController.text,
+                          //   //districts: selectedDistrict,
+                          //   districts: transformedResponses,
+                          //   //bloodGroup: selectBloodGroup,
+                          //   backLicence: /*controller.drivingLicenceImages[1]*/"",
+                          //   adhaarNo: controller.adharController.text,
+                          //   address: controller.addressController.text,
+                          //   activeLocation: controller.locController.text,
+                          //   context: context,
+                          //
+                          //   fName: controller.fNameController.text,
+                          // );
+
+                        },
+                        reversed: true,
+                      )
+                  ),
+                ),
+
+
+            );
+          } else if(snapshot.connectionState == ConnectionState.waiting){
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          else {
+            return Scaffold(
+              body: Center(
+                child: Text("Server Error"),
+              ),
+            );
+          }
+        }
     );
+
 
 
 
@@ -291,6 +302,3 @@ Future<QuestionsModel?>? questionModel;
 
 
 }
-
-
-

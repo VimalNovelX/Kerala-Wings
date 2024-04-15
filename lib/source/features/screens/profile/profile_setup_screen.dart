@@ -10,6 +10,7 @@ import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
+import 'package:kerala_wings/utils/snack_bar.dart';
 import 'package:kerala_wings/utils/toastUtil.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'controller/selection_controller.dart';
@@ -667,52 +668,56 @@ class ProfileSetupScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500
                 ),
                 key: _key,
-                onSubmit: () {
+                onSubmit: controller.areFilled.value ? () {
+
+                  Get.to(QuestionAnsweringScreen());
 
 
-                  print( "nameController=>${controller.nameController.text}\n"
-                      "homeMobController=>${controller.homeMobController.text}\n"
-                      "licenceController=>${controller.licenceController.text}\n"
-                      "licenceDateController=>${controller.licenceDateController.text}\n"
-                     "fNameController=>${controller.fNameController.text}\n"
-                      "dobController=>${controller.dobController.text}\n"
-                      "adharController=>${controller.adharController.text}\n"
-                     "addressController=>${ controller.addressController.text}\n"
-                      "locController=>${controller.locController.text}\n"
-                      "selectBloodGroup=>$selectBloodGroup\n selectedDistrict=>$selectedDistrict");
+               //    print( "nameController=>${controller.nameController.text}\n"
+               //        "homeMobController=>${controller.homeMobController.text}\n"
+               //        "licenceController=>${controller.licenceController.text}\n"
+               //        "licenceDateController=>${controller.licenceDateController.text}\n"
+               //       "fNameController=>${controller.fNameController.text}\n"
+               //        "dobController=>${controller.dobController.text}\n"
+               //        "adharController=>${controller.adharController.text}\n"
+               //       "addressController=>${ controller.addressController.text}\n"
+               //        "locController=>${controller.locController.text}\n"
+               //        "selectBloodGroup=>$selectBloodGroup\n selectedDistrict=>$selectedDistrict");
+               //
+               //
+               //
+               //
+               //
+               //
+               //  if(
+               //  controller.nameController.text.isNotEmpty&&
+               //  controller.homeMobController.text.isNotEmpty&&controller.licenceController.text.isNotEmpty&&
+               //      controller.licenceDateController.text.isNotEmpty&&
+               //      controller.dobController.text.isNotEmpty&&controller.adharController.text.isNotEmpty&&
+               //      controller.addressController.text.isNotEmpty&&controller.locController.text.isNotEmpty&&
+               //
+               //      selectBloodGroup!=null && selectedDistrict!=null
+               //
+               //
+               //
+               //  )  {
+               // return   Future.delayed(
+               //        const Duration(seconds: 1),
+               //            () {
+               //          Get.to( QuestionAnsweringScreen());
+               //        }
+               //    );
+               //  }else{
+               //    selectBloodGroup==null ? ToastUtil.show("Please select Blood Group"):
+               //  selectedDistrict==null?ToastUtil.show("Please select district"):ToastUtil.show("Please fill all required fields")
+               //    ;
+               //
+               //     return null;
+               //  }
 
-
-
-
-
-
-                if(
-                controller.nameController.text.isNotEmpty&&
-                controller.homeMobController.text.isNotEmpty&&controller.licenceController.text.isNotEmpty&&
-                    controller.licenceDateController.text.isNotEmpty&&
-                    controller.dobController.text.isNotEmpty&&controller.adharController.text.isNotEmpty&&
-                    controller.addressController.text.isNotEmpty&&controller.locController.text.isNotEmpty&&
-
-                    selectBloodGroup!=null && selectedDistrict!=null
-
-
-
-                )  {
-               return   Future.delayed(
-                      const Duration(seconds: 1),
-                          () {
-                        Get.to( QuestionAnsweringScreen());
-                      }
-                  );
-                }else{
-                  selectBloodGroup==null ? ToastUtil.show("Please select Blood Group"):
-                selectedDistrict==null?ToastUtil.show("Please select district"):ToastUtil.show("Please fill all required fields")
-                  ;
-
-                   return null;
-                }
-
-                }, 
+                } : (){
+                  GetXSnackBar.show("Note", "Complete your details", true);
+                },
                 reversed: true,
               )
             ),
