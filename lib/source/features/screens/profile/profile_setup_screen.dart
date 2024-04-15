@@ -262,7 +262,7 @@ class ProfileSetupScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(
-                                width: width * .65,
+                                width: width * .6,
                                 child: CustomTextField(
                                   hitText: "Aadhaar Number",
                                   controller: controller.adharController,
