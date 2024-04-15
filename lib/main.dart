@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:in_app_notification/in_app_notification.dart';
+import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:kerala_wings/source/features/screens/profile/profile_setup_screen.dart';
 import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home:
         //QuestionAnsweringScreen()
-     LoginScreen()
+     LoginScreen/*HomeScreen*/()
         // VerificationScreen()
       ),
     );

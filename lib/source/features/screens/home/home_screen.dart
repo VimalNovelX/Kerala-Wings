@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/tripcard_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../../../data/models/driver_view_trip_model.dart';
+
+class HomeScreen extends StatefulWidget {
    HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
    final MyController controller = Get.put(MyController());
 
   TabController? _tabController;
@@ -22,6 +30,13 @@ class HomeScreen extends StatelessWidget {
 
    List tabs = ["All","Assigned","In Progress"];
 
+   Future<DriverViewTripDetailsModel?>? driverViewTripModel;
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: 125,type: "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -354,13 +369,41 @@ class HomeScreen extends StatelessWidget {
                           ),
                           Expanded(child: TabBarView(
                             children: List.generate(
-                                tabs.length, (index) => ListView.builder(
-                              padding: EdgeInsets.only(top: 15),
-                              itemCount: 10,
-                              itemBuilder: (context,index){
-                                return TripCardWidget();
-                              },
-                            )
+                                tabs.length, (index) => FutureBuilder(
+                                future: driverViewTripModel,
+                                  builder: (context, AsyncSnapshot<DriverViewTripDetailsModel?> snapshot) {
+                                  if(snapshot.hasData){
+                                  return ListView.builder(
+                                    padding: EdgeInsets.only(top: 15),
+                                    itemCount: snapshot.data!.data!.length,
+                                    itemBuilder: (context,index){
+                                      return TripCardWidget(
+                                        customerName:  snapshot.data!.data![index].customerName,
+                                        customerNumber:  snapshot.data!.data![index].customerNumber,
+                                        bookingType:     snapshot.data!.data![index].bookingType,
+                                        date:     snapshot.data!.data![index].date,
+                                        destination:   snapshot.data!.data![index].destination,
+                                        driverIdAssign:  snapshot.data!.data![index].driverIdAssign,
+                                        pickupLocation: snapshot.data!.data![index].pickupLocation,
+                                        time:  snapshot.data!.data![index].time,
+                                        vehicle:   snapshot.data!.data![index].vehicle,
+                                        vehNo:   snapshot.data!.data![index].vehNo,
+                                        vehType:  snapshot.data!.data![index].vehType,
+
+
+
+                                      );
+                                    },
+                                  );
+                                  }
+                                  else if(snapshot.connectionState==ConnectionState.waiting){
+                                    return Center(child: CircularProgressIndicator(),);
+                                  }else{
+                                    return Center(child: Text("Please Try Again"),);
+                                  }
+
+                                  }
+                                )
                             ),
                           ))
 
@@ -420,8 +463,6 @@ class HomeScreen extends StatelessWidget {
                 ],
               );
   }
-
-
 }
 
 class CustomTab extends StatelessWidget {

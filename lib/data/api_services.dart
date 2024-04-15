@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart'as http;
 import 'package:kerala_wings/data/models/driver_register.dart';
 import 'package:kerala_wings/data/models/otp_model.dart';
+import 'package:kerala_wings/utils/constants.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
+import 'models/driver_view_trip_model.dart';
 import 'models/questions_model.dart';
 
 
@@ -97,6 +99,11 @@ class NetworkHelper{
         // "Authorization": "Bearer $token"
       }, body: {},);*/
     if (response!.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      // drivercode = data['data']['driver']['code'];
+      // name = data['data']['driver']['f_name'];
+      // driverPhone = data['data']['driver']['phone'];
+      // driverType = data['data']['driver']['type'];
       return OtpModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
@@ -209,6 +216,33 @@ class NetworkHelper{
       ToastUtil.show("${data['msg']}");
 
       return DriverRegisterModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  Future<DriverViewTripDetailsModel?> driverViewTripDetailsApi(
+      {required BuildContext context,driver_id, type
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: "${Urls.driverViewTripDetailsUrl}",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+    "driver_id":driver_id.toString(),
+      "type":type
+ },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return DriverViewTripDetailsModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
       debugPrint(response.body);

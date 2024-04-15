@@ -7,9 +7,25 @@ import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/bottom_sheet_widget.dart';
 
-class TripCardWidget extends StatelessWidget {
-  const TripCardWidget({Key? key}) : super(key: key);
+class TripCardWidget extends StatefulWidget {
+  final String? customerName;
+  final String? customerNumber;
+  final String? bookingType;
+  final String? date;
+  final String? destination;
+  final int? driverIdAssign;
+  final String? pickupLocation;
+  final String? time;
+  final String? vehicle;
+  final String?vehNo;
+  final String? vehType;
+  const TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType,  }) : super(key: key);
 
+  @override
+  State<TripCardWidget> createState() => _TripCardWidgetState();
+}
+
+class _TripCardWidgetState extends State<TripCardWidget> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -50,11 +66,11 @@ class TripCardWidget extends StatelessWidget {
                           bottomRight: Radius.circular(20)
                         )
                       ),
-                      child: const IntrinsicHeight(
+                      child:  IntrinsicHeight(
                         child: Row(
                           children: [
                             Text(
-                                "15 Dec 22",
+                                widget.date!.toString(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -74,7 +90,7 @@ class TripCardWidget extends StatelessWidget {
 
 
                             Text(
-                              "10.20 am",
+                              widget.time!.toString(),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
@@ -86,10 +102,10 @@ class TripCardWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Padding(
+                     Padding(
                       padding: EdgeInsets.only(left: 15.0,top: 8,bottom: 2),
                       child: Text(
-                          "P Mathew Varghese",
+                          widget.customerName!.toString(),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600
@@ -102,7 +118,7 @@ class TripCardWidget extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              "Maruti Swift",
+                        widget.vehicle!.toString(),
                               style: TextStyle(
                                   color:Colors.grey.shade400,
                                   fontWeight: FontWeight.w500,
@@ -122,8 +138,8 @@ class TripCardWidget extends StatelessWidget {
 
 
                             RichText(
-                                text: const TextSpan(
-                                  text: "KL 22 3456",
+                                text:  TextSpan(
+                                  text: widget.vehNo!.toString(),
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: cPrimaryColor,
@@ -131,7 +147,7 @@ class TripCardWidget extends StatelessWidget {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: " ( manual )",
+                                      text: " ( ${widget.vehType!.toString()} )",
                                       style: TextStyle(
                                         color: cGreen,
                                         fontSize: 12,
@@ -317,7 +333,7 @@ class TripCardWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildRichText(),
+                        buildRichText(text1: widget.pickupLocation!.toString(),text2: widget.destination!.toString(),),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15,
@@ -338,7 +354,8 @@ class TripCardWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        buildRichText(),
+              buildRichText(text1: widget.destination!.toString(),text2: widget.destination!.toString(),),
+
 
 
 
@@ -381,10 +398,10 @@ class TripCardWidget extends StatelessWidget {
     );
   }
 
-  RichText buildRichText() {
+  RichText buildRichText({text1,text2}) {
     return RichText(text:
-                        const TextSpan(
-                          text: "Poojapura\n",
+                         TextSpan(
+                          text: "$text1\n",
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -392,7 +409,7 @@ class TripCardWidget extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text:  "poojaoura po trivandrum tvm 12",
+                              text:  "$text2",
                               style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500,
