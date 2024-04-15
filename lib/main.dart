@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:in_app_notification/in_app_notification.dart';
 import 'package:kerala_wings/source/features/screens/profile/profile_setup_screen.dart';
+import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/splash/splash_screen.dart';
 import 'package:kerala_wings/source/features/screens/verification/verification_screen.dart';
@@ -15,11 +16,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const InAppNotification(
+    return  InAppNotification(
       child: GetMaterialApp(
         title: 'Kerala Wings',
         debugShowCheckedModeBanner: false,
-        home: LoginScreen()
+        home:
+        //QuestionAnsweringScreen()
+     LoginScreen()
         // VerificationScreen()
       ),
     );
