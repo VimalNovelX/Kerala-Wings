@@ -1,14 +1,19 @@
 import 'package:dotted_line/dotted_line.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/bottom_sheet_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TripCardWidget extends StatefulWidget {
   final String? customerName;
+  final String? tripType;
+  final String? trippType;
   final String? customerNumber;
   final String? bookingType;
   final String? date;
@@ -19,13 +24,31 @@ class TripCardWidget extends StatefulWidget {
   final String? vehicle;
   final String?vehNo;
   final String? vehType;
-  const TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType,  }) : super(key: key);
+  final String? bookingId;
+  const TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType, this.bookingId, this.tripType, this.trippType,  }) : super(key: key);
 
   @override
   State<TripCardWidget> createState() => _TripCardWidgetState();
 }
 
 class _TripCardWidgetState extends State<TripCardWidget> {
+
+  Future<void> _launchUrl(phoneNumber) async {
+    String _url = 'tel:$phoneNumber';
+    if (!await launchUrl(Uri.parse(_url))) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+  void _makePhoneCall(String phoneNumber) async {
+    String url = 'tel:$phoneNumber';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -33,7 +56,15 @@ class _TripCardWidgetState extends State<TripCardWidget> {
     return InkWell(
       onTap: (){
         Get.bottomSheet(
-          BottomSheetWidget()
+          BottomSheetWidget(
+              bookingId:widget.bookingId,
+              customerName: widget.customerName,
+              vehNo:  widget.vehNo,
+              vehType:  widget.vehType,vehicle:widget.vehicle,
+              time:  widget.time,driverIdAssign:widget.driverIdAssign,
+              date:  widget.date,
+              bookingType: widget.bookingType,
+              pickupLocation:    widget.pickupLocation,destination:widget.destination)
         );
       },
       child: Container(
@@ -120,7 +151,10 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                             Text(
                         widget.vehicle!.toString(),
                               style: TextStyle(
-                                  color:Colors.grey.shade400,
+                                  color:
+                                  widget.vehType.toString()=="Manual"?
+                                  Colors.blue: widget.vehType.toString()=="Automatic"?
+                                  Colors.red:Colors.green,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12
                               ),
@@ -149,7 +183,9 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                                     TextSpan(
                                       text: " ( ${widget.vehType!.toString()} )",
                                       style: TextStyle(
-                                        color: cGreen,
+                                        color: widget.vehType.toString()=="Manual"?
+                                        Colors.blue: widget.vehType.toString()=="Automatic"?
+                                        Colors.red:Colors.green,
                                         fontSize: 12,
 
                                       )
@@ -178,7 +214,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                       ),
                       child: Center(
                         child: Text(
-                          "Point to Point",
+                         widget.trippType.toString()=="Drop"? "Drop":"Point to Point",
                           style: TextStyle(
                             color: cDarkBlue.withOpacity(.8),
                             fontWeight: FontWeight.w500,
@@ -198,28 +234,35 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                     )
                   ],
                 ),
-                Container(
-                  margin: const EdgeInsets.only(
-                    right: 10,
-                    top: 10
-                  ),
-                  height: 40,
-                  width: 40,
-                  padding: const EdgeInsets.all(12),
+                InkWell(
+                  onTap: (){
+                    //_makePhoneCall(widget.customerNumber!);
+                    _launchUrl(widget.customerNumber);
 
-                  decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 5,
-                        blurRadius: 5,
-                        offset: Offset(0,0)
-                      )
-                    ],
-                    color: Colors.white,
-                    shape: BoxShape.circle
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      right: 10,
+                      top: 10
+                    ),
+                    height: 40,
+                    width: 40,
+                    padding: const EdgeInsets.all(12),
+
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          spreadRadius: 5,
+                          blurRadius: 5,
+                          offset: Offset(0,0)
+                        )
+                      ],
+                      color: Colors.white,
+                      shape: BoxShape.circle
+                    ),
+                    child: SvgPicture.asset(iPhone),
                   ),
-                  child: SvgPicture.asset(iPhone),
                 )
               ],
             ),
@@ -371,12 +414,12 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                           vertical: 3
                       ),
                       decoration: BoxDecoration(
-                          color: cPrimaryColor,
+                          color:widget.bookingType.toString()=="Live"?Colors.green: cPrimaryColor,
                           borderRadius: BorderRadius.circular(15)
                       ),
-                      child: const Center(
+                      child:  Center(
                         child: Text(
-                          "Assigned",
+                          widget.bookingType.toString(),
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,

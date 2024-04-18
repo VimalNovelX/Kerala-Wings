@@ -7,8 +7,10 @@ import 'package:kerala_wings/source/features/screens/question_section/question_a
 import 'package:kerala_wings/source/features/screens/startup_screens/login/login_screen.dart';
 import 'package:kerala_wings/source/features/screens/startup_screens/splash/splash_screen.dart';
 import 'package:kerala_wings/source/features/screens/verification/verification_screen.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
+void main() async{
+  await GetStorage.init();
   runApp(const MyApp());
 }
 

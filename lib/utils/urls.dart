@@ -7,6 +7,8 @@ class Urls {
   static String driverRegisterUrl = "$baseUrl/driverRegister";
   static String driverViewTripDetailsUrl = "$baseUrl/driverViewTripDetails";
   static String startDriverTripUrl = "$baseUrl/startDrivertrip";
+  static String endTripUrl = "$baseUrl/endTrip";
+  static String driverLeaveHistoryUrl = "$baseUrl/driverLeaveHistory";
 
 
 }

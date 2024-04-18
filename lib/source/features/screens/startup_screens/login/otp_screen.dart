@@ -30,6 +30,7 @@ class OtpBottomSheet extends StatefulWidget {
 
 class _OtpBottomSheetState extends State<OtpBottomSheet> {
   bool _otpActive =false;
+  var id;
   Future<OtpModel?>? otpModel;
   TextEditingController _otpController1 =TextEditingController();
   TextEditingController _otpController2 =TextEditingController();
@@ -81,7 +82,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
             builder: (context, AsyncSnapshot<OtpModel?>snapshot) {
               if(snapshot.hasData){
                 var otp = snapshot.data!.data!.otp;
-
+       id = snapshot.data!.data!.driver!.id;
                 if (otp != null) {
                   InAppNotification.show(child: NotificationBody(count: otp,), context: context);
                   // Split the OTP into individual characters
@@ -199,12 +200,17 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
               await Future.delayed(const Duration(seconds: 3));
               widget._phoneNumberController.text.isNotEmpty? controller.success():controller.reset();
 
+Future.delayed(Duration(seconds: 3));
+print("drivercode=>$drivercode");
 
-              drivercode!=null &&  widget._phoneNumberController.text.isNotEmpty?
 
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel)), (route) => false):
-              widget._phoneNumberController.text.isNotEmpty?
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen())):
+              drivercode!=null &&  widget._phoneNumberController.text.isNotEmpty &&widget._phoneNumberController.text.length==10?
+
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel,
+              driverId:  id,
+              )), (route) => false):
+              widget._phoneNumberController.text.isNotEmpty && widget._phoneNumberController.text.length==10?
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen(phone:widget._phoneNumberController.text))):
               ToastUtil.show("Please enter phone number!!!");
             },
             icon: SvgPicture.asset(iLoading),
@@ -228,14 +234,14 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
             action: (controller) async {
               controller.loading();
               await Future.delayed(const Duration(seconds: 3));
-              widget._phoneNumberController.text.isNotEmpty? controller.success():controller.reset();
+              widget._phoneNumberController.text.isNotEmpty&&widget._phoneNumberController.text.length==10? controller.success():controller.reset();
 
 
               //widget._phoneNumberController.text.isNotEmpty?  Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>OtpScreen())):
 
               //widget._phoneNumberController.text.isNotEmpty?
               setState(() {
-                widget._phoneNumberController.text.isNotEmpty? _otpActive =true : ToastUtil.show("Please enter phone number!!!");
+                widget._phoneNumberController.text.isNotEmpty&&widget._phoneNumberController.text.length==10? _otpActive =true : ToastUtil.show("Please enter phone number!!!");
                 sendOtp();
                 controller.reset();
               });

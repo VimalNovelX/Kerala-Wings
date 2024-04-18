@@ -256,22 +256,106 @@ class TextHelper{
       fontSize: 10
     );
   }
+  static get font12w600G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w600,
+      fontSize: 12
+    );
+  }
+  static get font14w600G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w600,
+      fontSize: 14
+    );
+  }
+  static get font16w600G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w600,
+      fontSize: 16
+    );
+  }
+  static get font10w600G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w600,
+      fontSize: 10
+    );
+  }
+  static get font12w400G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w400,
+      fontSize: 12
+    );
+  }
+  static get font14w400G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w400,
+      fontSize: 14
+    );
+  }
+  static get font16w400G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w400,
+      fontSize: 16
+    );
+  }
+  static get font10w400G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w400,
+      fontSize: 10
+    );
+  }
+  static get font12w500G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w500,
+      fontSize: 12
+    );
+  }
+  static get font14w500G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w500,
+      fontSize: 14
+    );
+  }
+  static get font16w500G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w500,
+      fontSize: 16
+    );
+  }
+  static get font10w500G{
+    return   TextStyle(
+      color: Colors.grey.shade400,
+      fontWeight: FontWeight.w500,
+      fontSize: 10
+    );
+  }
   static get font12w600DB{
-    return  const TextStyle(
+    return   TextStyle(
       color: cDarkBlue,
       fontWeight: FontWeight.w600,
       fontSize: 12
     );
   }
   static get font14w600DB{
-    return  const TextStyle(
+    return   TextStyle(
       color: cDarkBlue,
       fontWeight: FontWeight.w600,
       fontSize: 14
     );
   }
   static get font16w600DB{
-    return  const TextStyle(
+    return   TextStyle(
       color: cDarkBlue,
       fontWeight: FontWeight.w600,
       fontSize: 16

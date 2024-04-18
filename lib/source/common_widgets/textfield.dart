@@ -53,7 +53,7 @@ class CustomTextField extends StatelessWidget {
           ),
           // errorMaxLines: 1,
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
           filled: true,
           fillColor: cGrey.withOpacity(.5),
           hintText: hitText,

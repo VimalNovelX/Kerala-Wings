@@ -1,13 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart' as getx;
+
+// import 'package:get/get.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/instance_manager.dart';
 import 'package:http/http.dart'as http;
 import 'package:kerala_wings/data/models/driver_register.dart';
+import 'package:kerala_wings/data/models/leave_history_model.dart';
 import 'package:kerala_wings/data/models/otp_model.dart';
+import 'package:kerala_wings/data/models/start_trip_model.dart';
+import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
+import 'package:kerala_wings/source/features/screens/verification/verification_screen.dart';
+import 'package:kerala_wings/utils/snack_bar.dart';
 import 'package:kerala_wings/utils/constants.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
 import 'models/driver_view_trip_model.dart';
+import 'models/end_trip_model.dart';
 import 'models/questions_model.dart';
 
 
@@ -100,12 +112,13 @@ class NetworkHelper{
       }, body: {},);*/
     if (response!.statusCode == 200) {
       var data = jsonDecode(response.body);
+
       if(data['data']['driver']!=null){
         drivercode = data['data']['driver']['code'];
-        name = data['data']['driver']['f_name'];
-        driverPhone = data['data']['driver']['phone'];
-        driverType = data['data']['driver']['type'];
+
       }
+
+
       return OtpModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
@@ -251,7 +264,7 @@ class NetworkHelper{
       return null;
     }
   }
- Future<DriverViewTripDetailsModel?> startDriverTripApi(
+ Future<StartTripModel?> startDriverTripApi(
       {required BuildContext context,bookingId, tripStartBy
       }) async {
     http.Response? response;
@@ -269,7 +282,59 @@ class NetworkHelper{
       var data = jsonDecode(response.body);
       ToastUtil.show("${data['msg']}");
 
-      return DriverViewTripDetailsModel.fromJson(jsonDecode(response.body));
+      return StartTripModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  Future<EndTripModel?> endTripApi(
+      {required BuildContext context,bookingId, tripStartBy,amount
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: "${Urls.endTripUrl}",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+    "booking_id":bookingId.toString(),
+      "trip_start_by":tripStartBy,
+      "amount":"100"
+ },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return EndTripModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  Future<LeaveHistoryModel?> leaveHistoryAPI(
+      {required BuildContext context,year, month,driverId
+      }) async {
+    http.Response? response;
+    response = await _getRequest(
+      context: context,
+      url: "${Urls.driverLeaveHistoryUrl}?year=2024&month=03&driver_id=116",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      },);
+    if (response!.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return LeaveHistoryModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
       debugPrint(response.body);
@@ -279,7 +344,88 @@ class NetworkHelper{
 
 
 
- Future<DriverRegisterModel?> driversRegisterApi(
+
+  Future<void> driverRegistrationApi({
+    required BuildContext context,
+    required String name,
+    required String phone,
+    required String driverType,
+    required String address,
+    required String licence,
+    required String dob,
+    required String licenceExp,
+    required String sType,
+    required String district,
+    required String adhaar,
+    required String hPhone,
+    required String location,
+    required String bGroup,
+    required String father,
+    qus,
+   required String photos,
+    required String   licenceFront,
+    required String   licenceFrontName,
+    required String  licenceBack,
+    required String  licenceBackName,
+    required String   photoName,
+  }) async {
+    try {
+      var profileFile = photos != null ? await MultipartFile.fromFile(photos, filename: photoName) : null;
+      var frontLicence = licenceFront != null ? await MultipartFile.fromFile(licenceFront, filename: licenceFrontName) : null;
+      var backLicence = licenceBack != null ? await MultipartFile.fromFile(licenceBack, filename: licenceBackName) : null;
+      var qusStringMap = qus.toString();
+
+      var formData = FormData.fromMap({
+        "f_name": name,
+        "phone": phone,
+        "driver_type": driverType,
+        "address": address,
+        "licence_no": licence,
+        "dob": dob,
+        "licence_exp": licenceExp,
+        "salary_type": sType,
+        "districts": district,
+        "adhaar_no": adhaar,
+        "h_phone": hPhone,
+        "active_location": location,
+        "front_licence": frontLicence,
+        "back_licence": backLicence,
+        "profile": profileFile,
+        "blood_group": bGroup,
+        "qus": qusStringMap,
+        "father": father,
+      });
+
+      var response = await uploadFilesData(
+        url: Urls.driverRegisterUrl,
+        context: context,
+        header: {
+          "Content-Type": "application/json",
+          // "Authorization": "Bearer $token"
+        },
+        formData: formData,
+      );
+
+      var data = response;
+      if (data["status"] == "success") {
+        GetXSnackBar.show("Success", data["msg"], false);
+        Get.offAll(VerificationScreen());
+        print("response----------$data");
+      } else {
+        GetXSnackBar.show(data["status"], data["msg"], true);
+        debugPrint("data---------------$data");
+      }
+    } catch (e) {
+      // Handle exceptions, log or show error message
+
+      print("qus-------$qus");
+      print("Error in driverRegistrationApi: $e");
+      GetXSnackBar.show("Error", "An error occurred. Please try again.", true);
+    }
+  }
+
+
+  Future<DriverRegisterModel?> driversRegisterApi(
       {required BuildContext context,f_name,phone,
         driverType,address,licenceNo,dob,licenceExp,
         salaryType,districts,adhaarNo,hPhone,
@@ -449,6 +595,27 @@ Future<http.Response?> _getRequest({
   return response;
 }
 
+Future uploadFilesData({
+  var formData,
+  required String url,
+  required BuildContext context,
+  required Map<String, String> header,
+}) async {
+  // FormData data = FormData.fromMap(formData);
+  Dio dio = Dio();
+  dio.options.headers = header;
+  var response = await dio
+      .post(
+    url,
+    data: formData,
+  )
+      .catchError((error) {
+    debugPrint(error.toString());
+  });
+  return response.data;
+}
+
+
 Future<http.Response> _postRequest({
   required BuildContext context,
   required String url,
@@ -490,6 +657,8 @@ Future<http.Response> _multiPartPostRequest(
   }
   return response;
 }
+
+
 
 //
 // Future uploadFilesData({

@@ -10,10 +10,12 @@ import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/tripcard_widget.dart';
 
 import '../../../../data/models/driver_view_trip_model.dart';
+import 'more_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final Future<OtpModel?>? otpModel;
-   HomeScreen({Key? key, this.otpModel, }) : super(key: key);
+  final driverId;
+   HomeScreen({Key? key, this.otpModel, this.driverId, }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
    final MyController controller = Get.put(MyController());
-Future<OtpModel?>? otPModel;
+   late Future<OtpModel?> otPModel;
   TabController? _tabController;
 
   RxInt selectedIndex = 0.obs;
@@ -30,21 +32,28 @@ Future<OtpModel?>? otPModel;
      selectedIndex.value = index;
    }
 
-   List tabs = ["All","Assigned","In Progress"];
+   List tabs = ["All","Assigned","Live"];
 
    Future<DriverViewTripDetailsModel?>? driverViewTripModel;
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: 125,type: "");
+    driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: widget.driverId,type: "");
 
 
+   }
+   String? tripType;
+
+
+   tripDetail(type){
+     driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: widget.driverId,type: type);
+return driverViewTripModel;
    }
 
   @override
   Widget build(BuildContext context) {
-     otPModel =widget.otpModel ;
+     otPModel =widget.otpModel! ;
     var width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -73,7 +82,7 @@ Future<OtpModel?>? otPModel;
                         padding: const EdgeInsets.only(
                             top: 10
                         ),
-                        decoration: const BoxDecoration(
+                        decoration:  BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
                               topRight: Radius.circular(15),
@@ -82,8 +91,23 @@ Future<OtpModel?>? otPModel;
                         ),
                         child: ListTile(
                           horizontalTitleGap: 8,
-                          leading: const CircleAvatar(
+                          leading:  CircleAvatar(
                             radius: 25,
+                            child: Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: ClipRRect(child:  Image.network('https://keralawingstravel.com/public/assets/images/profile/${snapshot.data!.data!.driver!.profile!.toString()}',
+                                height: 50,
+                                width: 50,
+
+                                fit: BoxFit.fitWidth,
+                              ),
+                              clipBehavior: Clip.hardEdge,
+
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            )
+
+
                           ),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,7 +116,7 @@ Future<OtpModel?>? otPModel;
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
-                                    width: width*.38,
+                                    width: width*.48,
                                     child:  Text(
                                      snapshot.data!.data!.driver!.fName!.toString(),
                                       style: TextStyle(
@@ -113,7 +137,7 @@ Future<OtpModel?>? otPModel;
                                   ),
                                   RichText(
                                       text: TextSpan(
-                                          text: snapshot.data!.data!.driver!.bloodGroup!.toString(),
+                                          text: "0",
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: cYellow,
@@ -146,12 +170,20 @@ Future<OtpModel?>? otPModel;
                                         color: const Color(0xFFEBF4EC),
                                         borderRadius: BorderRadius.circular(15)
                                     ),
-                                    child: const Center(
-                                      child: Text(
+                                    child:  Center(
+                                      child:  snapshot.data!.data!.driver!.status==1?Text(
                                         "ACTIVE",
                                         style: TextStyle(
                                             fontSize: 12,
                                             color: cGreen,
+                                            fontWeight: FontWeight.w500
+                                        ),
+                                      ):
+                                      Text(
+                                        "BLOCKED",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.red.shade300,
                                             fontWeight: FontWeight.w500
                                         ),
                                       ),
@@ -213,7 +245,7 @@ Future<OtpModel?>? otPModel;
                             ],
                           ),
                         ),
-                        child: buildRow(),
+                        child: buildRow("Total","Earnings"),
                       ),
                       Container(
                         margin: const EdgeInsets.symmetric(
@@ -237,7 +269,7 @@ Future<OtpModel?>? otPModel;
                           ),
 
                         ),
-                        child: buildRow(),
+                        child: buildRow("Amount", "Payable"),
                       ),
 
 
@@ -292,46 +324,51 @@ Future<OtpModel?>? otPModel;
                                 ]
                               ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  color: cPrimaryColor,
-                                  borderRadius: BorderRadius.circular(20)
-                                ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 15,),
-                                RichText(text: TextSpan(
-                                text: "More",
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500
-                                    ),
+                              InkWell(
+                                onTap: (){
+                                 Navigator.push(context, MaterialPageRoute(builder: (builder)=>MoreDetailsScreen())) ;
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    color: cPrimaryColor,
+                                    borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: Row(
                                     children: [
-                                      const TextSpan(
-                                        text: " ",
+                                      const SizedBox(width: 15,),
+                                  RichText(text: TextSpan(
+                                  text: "More",
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500
                                       ),
-                                      TextSpan(
-                                        text: "information  ",
-                                        style: TextStyle(
-                                            color: Colors.grey.shade400,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500
+                                      children: [
+                                        const TextSpan(
+                                          text: " ",
+                                        ),
+                                        TextSpan(
+                                          text: "information  ",
+                                          style: TextStyle(
+                                              color: Colors.grey.shade400,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500
+                                          ),
+                                        )
+                                      ]
+                                  ),),
+                                      CircleAvatar(
+                                        radius: 15,
+                                        backgroundColor: Colors.white,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: SvgPicture.asset(iArrowRight),
                                         ),
                                       )
-                                    ]
-                                ),),
-                                    CircleAvatar(
-                                      radius: 15,
-                                      backgroundColor: Colors.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: SvgPicture.asset(iArrowRight),
-                                      ),
-                                    )
-
-                                ]
+                                
+                                  ]
+                                  ),
                                 ),
                               )
                             ],
@@ -345,6 +382,12 @@ Future<OtpModel?>? otPModel;
                             labelPadding: EdgeInsets.only(right: 15),
                             onTap: (index) {
                               controller.updateSelectedIndex(index);
+
+                              setState(() {
+                               index==1?tripType="assigned":index==2?tripType="live":tripType="";
+                              });
+print("$tripType--$index");
+                              tripDetail(tripType);
                             },
                             tabAlignment: TabAlignment.start,
                             dividerColor: Colors.transparent,
@@ -393,22 +436,31 @@ Future<OtpModel?>? otPModel;
                                 future: driverViewTripModel,
                                   builder: (context, AsyncSnapshot<DriverViewTripDetailsModel?> snapshot) {
                                   if(snapshot.hasData){
-                                  return ListView.builder(
+                                  return
+                                    snapshot.data!.data!.isEmpty?
+                                        Center(child: Text("No trip available"),):
+
+
+                                    ListView.builder(
                                     padding: EdgeInsets.only(top: 15),
                                     itemCount: snapshot.data!.data!.length,
                                     itemBuilder: (context,index){
                                       return TripCardWidget(
+                                        tripType:tripType,
+                                        bookingId: snapshot.data!.data![index].bookingId.toString(),
                                         customerName:  snapshot.data!.data![index].customerName,
                                         customerNumber:  snapshot.data!.data![index].customerNumber,
                                         bookingType:     snapshot.data!.data![index].bookingType,
                                         date:     snapshot.data!.data![index].date,
                                         destination:   snapshot.data!.data![index].destination,
+                                        trippType:snapshot.data!.data![index].tripType,
                                         driverIdAssign:  snapshot.data!.data![index].driverIdAssign,
                                         pickupLocation: snapshot.data!.data![index].pickupLocation,
                                         time:  snapshot.data!.data![index].time,
                                         vehicle:   snapshot.data!.data![index].vehicle,
                                         vehNo:   snapshot.data!.data![index].vehNo,
                                         vehType:  snapshot.data!.data![index].vehType,
+
 
 
 
@@ -442,13 +494,13 @@ Future<OtpModel?>? otPModel;
     );
   }
 
-  Row buildRow() {
+  Row buildRow(text1, text2) {
     return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
 
-                  RichText(text: const TextSpan(
-                    text: "Total",
+                  RichText(text:  TextSpan(
+                    text: text1,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -463,7 +515,7 @@ Future<OtpModel?>? otPModel;
                           )
                       ),
                       TextSpan(
-                        text: "Earnings",
+                        text: text2,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: Colors.white
@@ -473,7 +525,7 @@ Future<OtpModel?>? otPModel;
                   ),
                   ),
                   const Text(
-                    "Rs 20,000",
+                    "Coming soon",
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: Colors.white

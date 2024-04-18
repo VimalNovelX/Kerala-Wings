@@ -3,26 +3,94 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:kerala_wings/data/api_services.dart';
+import 'package:kerala_wings/data/models/end_trip_model.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
+import 'package:kerala_wings/utils/toastUtil.dart';
 
-class BottomSheetWidget extends StatelessWidget {
-   BottomSheetWidget({Key? key}) : super(key: key);
+import '../../../../../data/models/start_trip_model.dart';
+
+class BottomSheetWidget extends StatefulWidget {
+  final customerNumber;
+  final customerName;
+  final bookingId;
+  final vehNo;
+  final vehType;
+  final vehicle;
+  final time;
+  final driverIdAssign;
+  final date;
+  final bookingType;
+  final pickupLocation;
+  final destination;
 
 
-  RxBool isRideStart = false.obs;
+   BottomSheetWidget({Key? key, this.customerNumber, this.vehNo, this.vehType, this.vehicle, this.time, this.driverIdAssign, this.date, this.bookingType, this.pickupLocation, this.destination, this.customerName, this.bookingId}) : super(key: key);
+
+  @override
+  State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
+}
+
+
+
+class _BottomSheetWidgetState extends State<BottomSheetWidget> {
+  final isRideStart = RxBool(GetStorage().read('isRideStart') ?? false);
+  bool startRide = false;
+  TextEditingController _textFieldController = TextEditingController();
+  Future<StartTripModel?>? startTripModel;
+  Future<EndTripModel?>? endTripModel;
+
+  Future<StartTripModel?>? startTrip() async {
+    startTripModel =
+        NetworkHelper().startDriverTripApi(context: context, bookingId: widget.bookingId, tripStartBy: "");
+
+    // Wait for the result of startDriverTripApi
+    await startTripModel;
+
+    // After the trip starts, set isRideStart.value to true
+    isRideStart.value = true;
+    GetStorage().write('isRideStart', true); // Store the value
+
+    print("val==>${isRideStart.value}");
+
+    Navigator.pop(context);
+
+    return startTripModel;
+  }
+
+  Future<void> endTrip(amount) async {
+    // Call the endTripApi function with the provided reason
+    endTripModel = NetworkHelper().endTripApi(
+      context: context,
+      bookingId:  widget.bookingId,
+      tripStartBy: "revi",
+      amount: amount
+    );
+
+
+    isRideStart.value = false;
+    GetStorage().write('isRideStart', false);
+    Navigator.of(context).pop();
+
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    print( isRideStart.value);
     var width = MediaQuery.of(context).size.width;
-    return Obx(() => isRideStart.value?Container(
+    return Obx(() => isRideStart.value ==true
+        ? Container(
       padding: const EdgeInsets.all(15),
       decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          )
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,41 +102,37 @@ class BottomSheetWidget extends StatelessWidget {
             style: TextStyle(
               color: cFont,
               fontSize: 18,
-              fontWeight: FontWeight.w600
-
+              fontWeight: FontWeight.w600,
             ),
           ),
           Text(
             "you want to end the trip",
             style: TextStyle(
               color: cRed.withOpacity(.5),
-              fontSize: 18
-
+              fontSize: 18,
             ),
           ),
           const SizedBox(height: 10,),
           Row(
             children: [
               InkWell(
-                onTap: (){
+                onTap: () {
                   Get.back();
                 },
                 child: Container(
                   height: 45,
-                  width: width*.38,
+                  width: width * .38,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          25
-                      ),
-                      border: Border.all(
-                          color: cRed.withOpacity(.5)
-                      )
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: cRed.withOpacity(.5),
+                    ),
                   ),
                   child: const Center(
                     child: Text(
                       "Cancel",
                       style: TextStyle(
-                          color: cRed
+                        color: cRed,
                       ),
                     ),
                   ),
@@ -77,63 +141,92 @@ class BottomSheetWidget extends StatelessWidget {
               const SizedBox(width: 15,),
               Expanded(
                 child: InkWell(
-                  onTap: (){
-                    isRideStart.value = true;
-
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Enter The Charge"),
+                          content: TextField(
+                            controller: _textFieldController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: "Rs.",
+                            ),
+                          ),
+                          actions: [
+                            Center(
+                              child: TextButton(
+                                onPressed: () {
+                                  _textFieldController.text.isNotEmpty
+                                      ? endTrip(_textFieldController.text)
+                                      : ToastUtil.show("Enter amount to end the ride!!");
+                                },
+                                child: Text(
+                                  "End Ride",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: cRed,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   child: Container(
                     height: 45,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            25
-                        ),
-                        color: cRed
-
+                      borderRadius: BorderRadius.circular(25),
+                      color: cRed,
                     ),
                     child: const Center(
                       child: Text(
                         "End Ride",
                         style: TextStyle(
-                            color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                     ),
                   ),
                 ),
+
               ),
             ],
-          )
-
+          ),
         ],
       ),
-
-    ) : Container(
-      // height: 150,
+    )
+        : Container(
       decoration: const BoxDecoration(
-          color: cPrimaryColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          )
+        color: cPrimaryColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
             minVerticalPadding: 0,
-            title: const Text(
-              "Poojapura",
+            title: Text(
+              widget.pickupLocation.toString(),
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
                 fontSize: 14,
               ),
             ),
-            subtitle: const Text(
-              "ppojapura to trivandrum 12",
+            subtitle: Text(
+              "${widget.pickupLocation.toString()} to ${widget.destination.toString()}",
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
@@ -152,35 +245,35 @@ class BottomSheetWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 15,
-              vertical: 10
+              vertical: 10,
             ),
             width: width,
             decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                )
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
             ),
             child: Column(
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "P Mathew Varghese",
+                      widget.customerName.toString(),
                       style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        color: cDarkBlue
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: cDarkBlue,
                       ),
                     ),
                     Text(
                       "Today",
                       style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        color: cPrimaryColor
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: cPrimaryColor,
                       ),
                     ),
                   ],
@@ -193,11 +286,11 @@ class BottomSheetWidget extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            "Maruti Swift",
+                            widget.vehicle.toString(),
                             style: TextStyle(
-                                color:Colors.grey.shade500,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12
+                              color: Colors.grey.shade500,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
                             ),
                           ),
                           const SizedBox(width: 5,),
@@ -205,22 +298,18 @@ class BottomSheetWidget extends StatelessWidget {
                             indent: 2,
                             endIndent: 2,
                             thickness: 1,
-                            color:Colors.grey.shade500,
+                            color: Colors.grey.shade500,
                             width: 2,
-
                           ),
                           const SizedBox(width: 5,),
-                          const Text(
-                            "KL 22 3456",
+                          Text(
+                            widget.vehNo.toString(),
                             style: TextStyle(
-                                fontSize: 10,
-                                color: cPrimaryColor,
-                                fontWeight: FontWeight.w500
+                              fontSize: 10,
+                              color: cPrimaryColor,
+                              fontWeight: FontWeight.w500,
                             ),
-                          )
-
-
-
+                          ),
                         ],
                       ),
                     ),
@@ -228,11 +317,11 @@ class BottomSheetWidget extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            "15 Dec 22",
+                            widget.date.toString(),
                             style: TextStyle(
-                                color:Colors.grey.shade500,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 10
+                              color: Colors.grey.shade500,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 10,
                             ),
                           ),
                           const SizedBox(width: 5,),
@@ -240,60 +329,51 @@ class BottomSheetWidget extends StatelessWidget {
                             indent: 2,
                             endIndent: 2,
                             thickness: 1,
-                            color:Colors.grey.shade500,
+                            color: Colors.grey.shade500,
                             width: 2,
-
                           ),
                           const SizedBox(width: 5,),
-                          const Text(
-                            "10:20 am",
+                          Text(
+                            widget.time.toString(),
                             style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500
+                              fontSize: 10,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
                             ),
-                          )
-
-
-
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 7,),
-
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: DottedLine(
                     dashColor: Colors.grey.withOpacity(.5),
-
                   ),
                 ),
                 const SizedBox(height: 10,),
                 Row(
                   children: [
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         Get.back();
                       },
                       child: Container(
                         height: 45,
-                        width: width*.38,
+                        width: width * .38,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            25
-                          ),
+                          borderRadius: BorderRadius.circular(25),
                           border: Border.all(
-                            color: cRed.withOpacity(.5)
-                          )
+                            color: cRed.withOpacity(.5),
+                          ),
                         ),
                         child: const Center(
                           child: Text(
                             "Cancel",
                             style: TextStyle(
-                              color: cRed
+                              color: cRed,
                             ),
                           ),
                         ),
@@ -302,27 +382,21 @@ class BottomSheetWidget extends StatelessWidget {
                     const SizedBox(width: 15,),
                     Expanded(
                       child: InkWell(
-                        onTap: (){
-                          isRideStart.value = true;
-
+                        onTap: () {
+                          startTrip();
                         },
                         child: Container(
                           height: 45,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              25
-                            ),
-                            color: cPrimaryColor
-
+                            borderRadius: BorderRadius.circular(25),
+                            color: cPrimaryColor,
                           ),
                           child: const Center(
                             child: Text(
                               "Start Ride",
                               style: TextStyle(
-                                color: Colors.white
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -330,14 +404,13 @@ class BottomSheetWidget extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
-
         ],
-      ),)
+      ),
+    ),
     );
-
   }
 }
