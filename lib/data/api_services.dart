@@ -9,6 +9,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
 import 'package:http/http.dart'as http;
 import 'package:kerala_wings/data/models/driver_register.dart';
+import 'package:kerala_wings/data/models/driver_terms_n_conditions.dart';
 import 'package:kerala_wings/data/models/leave_history_model.dart';
 import 'package:kerala_wings/data/models/otp_model.dart';
 import 'package:kerala_wings/data/models/start_trip_model.dart';
@@ -16,84 +17,50 @@ import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:kerala_wings/source/features/screens/verification/verification_screen.dart';
 import 'package:kerala_wings/utils/snack_bar.dart';
 import 'package:kerala_wings/utils/constants.dart';
+import '../utils/shared_preferences.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
+import 'models/driver_leave_apply_model.dart';
 import 'models/driver_view_trip_model.dart';
 import 'models/end_trip_model.dart';
 import 'models/questions_model.dart';
+import 'models/tarrif_model.dart';
 
 
 
 class NetworkHelper{
 
 
-  // Future login({required BuildContext context, required String email,required String password}) async {
-  //   http.Response? response;
-  //
-  //   if (await SharedPrefUtil.contains(keyAccessToken)) {
-  //     await SharedPrefUtil.delete(keyAccessToken);
-  //   }
-  //
-  //   response = await _postRequest(
-  //       context: context,
-  //       url: "${Urls.loginUrl}",
-  //       header: {
-  //         "Content-Type": "application/json",
-  //         "api-key":"fb7fb2cb-d0da-444d-bd92-20f0e947b132"
-  //
-  //         //"Content-Type": "multipart/form-data",
-  //       },body: {
-  //     "email": email,
-  //     "password": password
-  //   });
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   }
-  //   else if(response.statusCode == 401) {
-  //     ToastUtil.show("Username or Password doesn't exist");
-  //     debugPrint(response.body);
-  //   }
-  //   else {
-  //     ToastUtil.show("Server Error Please try After sometime ${response.statusCode}");
-  //     debugPrint(response.body);
-  //   }
-  // }
+  Future login({required BuildContext context, required String phone}) async {
+    http.Response? response;
 
-  // Future signUp({required BuildContext context, required String email,required String password,required String name,required String phone}) async {
-  //   http.Response? response;
-  //
-  //   if (await SharedPrefUtil.contains(keyAccessToken)) {
-  //     await SharedPrefUtil.delete(keyAccessToken);
-  //   }
-  //
-  //   response = await _postRequest(
-  //       context: context,
-  //       url: "${Urls.signUpUrl}",
-  //       header: {
-  //         "Content-Type": "application/json",
-  //         "api-key":"fb7fb2cb-d0da-444d-bd92-20f0e947b132"
-  //
-  //         //"Content-Type": "multipart/form-data",
-  //       },body: {
-  //     "name":name,
-  //     "phone":phone,
-  //     "email": email,
-  //     "password": password,
-  //   });
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   }
-  //   else if(response.statusCode == 401) {
-  //     ToastUtil.show("Username or Password doesn't exist");
-  //     debugPrint(response.body);
-  //   }
-  //   else {
-  //     ToastUtil.show("Server Error Please try After sometime ${response.statusCode}");
-  //     debugPrint(response.body);
-  //   }
-  // }
+    if (await SharedPrefUtil.contains(keyAccessToken)) {
+      await SharedPrefUtil.delete(keyAccessToken);
+    }
 
-  // //all_issues_api
+    response = await _getRequest(
+        context: context,
+        url: "${Urls.otpUrl}?phone=$phone",
+        header: {
+          "Content-Type": "application/json",
+          "api-key":"a4690239-5216-4974-87f6-1588153d7a20"
+
+          //"Content-Type": "multipart/form-data",
+        });
+    if (response!.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    else if(response.statusCode == 401) {
+      ToastUtil.show("Username or Password doesn't exist");
+      debugPrint(response.body);
+    }
+    else {
+      ToastUtil.show("Server Error Please try After sometime ${response.statusCode}");
+      debugPrint(response.body);
+    }
+  }
+
+//all_issues_api
   Future<OtpModel?> getOtp(
       {required BuildContext context,phone}) async {
     http.Response? response;
@@ -114,7 +81,7 @@ class NetworkHelper{
       var data = jsonDecode(response.body);
 
       if(data['data']['driver']!=null){
-        drivercode = data['data']['driver']['code'];
+        driverCode = data['data']['driver']['code'];
 
       }
 
@@ -159,38 +126,6 @@ class NetworkHelper{
   }
 
 
-
-  // //magazine_api
-  // Future<MagazineModel?> getMagazineApi(
-  //     {required BuildContext context}) async {
-  //   http.Response? response;
-  //   response = await _getRequest(context: context, url: "${Urls.getMagazineUrl}",header: {
-  //     "Content-Type": "application/json",
-  //     "api-key":"fb7fb2cb-d0da-444d-bd92-20f0e947b132"
-  //
-  //     // "Authorization": "Bearer $token"
-  //   }, );
-  //   /*_postRequest(
-  //     context: context,
-  //     url: "${Urls.getAllIssuesUrl}",
-  //     header: {
-  //       "Content-Type": "application/json",
-  //       // "Authorization": "Bearer $token"!
-  //     }, body: {},);*/
-  //   if (response!.statusCode == 200) {
-  //     return MagazineModel.fromJson(jsonDecode(response.body));
-  //   } else {
-  //     ToastUtil.show("Server Error Please try After sometime");
-  //     debugPrint(response.body);
-  //     return null;
-  //   }
-  // }
-  //
-  //
-
-
-
-//class_division_dropdown
   Future<DriverRegisterModel?> driverRegisterApi(
       {required BuildContext context,f_name,phone,
         driverType,address,licenceNo,dob,licenceExp,
@@ -255,7 +190,7 @@ class NetworkHelper{
  },);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      ToastUtil.show("${data['msg']}");
+      //ToastUtil.show("${data['msg']}");
 
       return DriverViewTripDetailsModel.fromJson(jsonDecode(response.body));
     } else {
@@ -318,23 +253,103 @@ class NetworkHelper{
     }
   }
 
-
+//Driver Leave
   Future<LeaveHistoryModel?> leaveHistoryAPI(
       {required BuildContext context,year, month,driverId
       }) async {
     http.Response? response;
     response = await _getRequest(
       context: context,
-      url: "${Urls.driverLeaveHistoryUrl}?year=2024&month=03&driver_id=116",
+      url: "${Urls.driverLeaveHistoryUrl}?year=$year&month=$month&driver_id=$driverId",
       header: {
         "Content-Type": "application/json",
         // "Authorization": "Bearer $token"
       },);
     if (response!.statusCode == 200) {
       var data = jsonDecode(response.body);
-      ToastUtil.show("${data['msg']}");
+      //ToastUtil.show("${data['msg']}");
 
       return LeaveHistoryModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+  //Driver Leave Apply
+  Future<DriverLeaveApplyModel?> leaveApplyAPI(
+      {required BuildContext context,fromDate,toDate, days,driverId,fromTime,toTime
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: Urls.driverLeaveApplyUrl,
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+        "driver_id":driverId,
+      "from_date":fromDate,
+      "to_date":toDate,
+      "from_time":fromTime,
+      "to_time":toTime,
+      "days":days,
+
+
+    },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return DriverLeaveApplyModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  Future<DriverTermsNConditionModel?> driverTermsNConditionAPI(
+      {required BuildContext context,fromDate,toDate, days,driverId,fromTime,toTime
+      }) async {
+    http.Response? response;
+    response = await _getRequest(
+      context: context,
+      url: Urls.driverTermsNConditionUrl,
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, );
+    if (response!.statusCode == 200) {
+      var data = jsonDecode(response.body);
+     // ToastUtil.show("${data['msg']}");
+
+      return DriverTermsNConditionModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+  Future<DriverTariffModel?> driverTariffAPI(
+      {required BuildContext context,fromDate,toDate, days,driverId,fromTime,toTime
+      }) async {
+    http.Response? response;
+    response = await _getRequest(
+      context: context,
+      url: Urls.driverTariffUrl,
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, );
+    if (response!.statusCode == 200) {
+      var data = jsonDecode(response.body);
+     // ToastUtil.show("${data['msg']}");
+
+      return DriverTariffModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
       debugPrint(response.body);

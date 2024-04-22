@@ -11,6 +11,8 @@ import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/utils/toastUtil.dart';
 
 import '../../../../../data/models/start_trip_model.dart';
+import '../../../../../utils/constants.dart';
+import '../home_screen.dart';
 
 class BottomSheetWidget extends StatefulWidget {
   final customerNumber;
@@ -25,9 +27,10 @@ class BottomSheetWidget extends StatefulWidget {
   final bookingType;
   final pickupLocation;
   final destination;
+  final driverStatus;
 
 
-   BottomSheetWidget({Key? key, this.customerNumber, this.vehNo, this.vehType, this.vehicle, this.time, this.driverIdAssign, this.date, this.bookingType, this.pickupLocation, this.destination, this.customerName, this.bookingId}) : super(key: key);
+   BottomSheetWidget({Key? key, this.customerNumber, this.vehNo, this.vehType, this.vehicle, this.time, this.driverIdAssign, this.date, this.bookingType, this.pickupLocation, this.destination, this.customerName, this.bookingId, this.driverStatus}) : super(key: key);
 
   @override
   State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
@@ -72,15 +75,19 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
     isRideStart.value = false;
     GetStorage().write('isRideStart', false);
-    Navigator.of(context).pop();
-
+    //Navigator.of(context).pop();
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(
+      driverId:  driverId,
+    )), (route) => false);
 
   }
 
 
   @override
   Widget build(BuildContext context) {
+    widget.driverStatus =="Live"?isRideStart.value =true:isRideStart.value =false;
     print( isRideStart.value);
+    print( widget.bookingType);
     var width = MediaQuery.of(context).size.width;
     return Obx(() => isRideStart.value ==true
         ? Container(
@@ -286,11 +293,14 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                       child: Row(
                         children: [
                           Text(
-                            widget.vehicle.toString(),
+                            widget.vehicle!.toString(),
                             style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
+                                color:
+                                widget.vehType.toString()=="Manual"?
+                                Colors.blue: widget.vehType.toString()=="Automatic"?
+                                Colors.red:Colors.green,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12
                             ),
                           ),
                           const SizedBox(width: 5,),

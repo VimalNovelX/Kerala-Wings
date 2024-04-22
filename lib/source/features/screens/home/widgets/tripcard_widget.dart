@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:intl/intl.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/bottom_sheet_widget.dart';
@@ -25,7 +26,12 @@ class TripCardWidget extends StatefulWidget {
   final String?vehNo;
   final String? vehType;
   final String? bookingId;
-  const TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType, this.bookingId, this.tripType, this.trippType,  }) : super(key: key);
+  final String? remark;
+  final String? address;
+  final String? driverStatus;
+  final String? enDate;
+
+  const TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType, this.bookingId, this.tripType, this.trippType, this.remark, this.address, this.driverStatus, this.enDate,  }) : super(key: key);
 
   @override
   State<TripCardWidget> createState() => _TripCardWidgetState();
@@ -48,11 +54,40 @@ class _TripCardWidgetState extends State<TripCardWidget> {
     }
   }
 
+  String getDayStatus(String dateStr) {
+    // Parse the date string into a DateTime object
+    DateTime parsedDate = DateFormat('dd MMM yy').parse(dateStr);
+
+    // Get the current date
+    DateTime currentDate = DateTime.now();
+
+    // Get tomorrow's date
+    DateTime tomorrowDate = currentDate.add(Duration(days: 1));
+
+    // Compare the parsed date with the current date and tomorrow's date
+    if (parsedDate.year == currentDate.year &&
+        parsedDate.month == currentDate.month &&
+        parsedDate.day == currentDate.day) {
+      return 'Today';
+    } else if (parsedDate.year == tomorrowDate.year &&
+        parsedDate.month == tomorrowDate.month &&
+        parsedDate.day == tomorrowDate.day) {
+      return 'Tomorrow';
+    } else {
+      // If not today or tomorrow, return the actual date
+      return "";
+    }
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+    var today = getDayStatus(widget.date!);
     return InkWell(
       onTap: (){
         Get.bottomSheet(
@@ -64,7 +99,9 @@ class _TripCardWidgetState extends State<TripCardWidget> {
               time:  widget.time,driverIdAssign:widget.driverIdAssign,
               date:  widget.date,
               bookingType: widget.bookingType,
-              pickupLocation:    widget.pickupLocation,destination:widget.destination)
+              pickupLocation:    widget.pickupLocation,
+              driverStatus: widget.driverStatus,
+              destination:widget.destination)
         );
       },
       child: Container(
@@ -101,7 +138,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                         child: Row(
                           children: [
                             Text(
-                                widget.date!.toString(),
+                                widget.date!.toString()+" - " +widget.enDate.toString(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -214,7 +251,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                       ),
                       child: Center(
                         child: Text(
-                         widget.trippType.toString()=="Drop"? "Drop":"Point to Point",
+                       widget.bookingType.toString(),
                           style: TextStyle(
                             color: cDarkBlue.withOpacity(.8),
                             fontWeight: FontWeight.w500,
@@ -234,35 +271,51 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                     )
                   ],
                 ),
-                InkWell(
-                  onTap: (){
-                    //_makePhoneCall(widget.customerNumber!);
-                    _launchUrl(widget.customerNumber);
 
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      right: 10,
-                      top: 10
-                    ),
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(12),
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 16),
+                      child: Text("$today",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17
+                          )
 
-                    decoration: const BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          spreadRadius: 5,
-                          blurRadius: 5,
-                          offset: Offset(0,0)
-                        )
-                      ],
-                      color: Colors.white,
-                      shape: BoxShape.circle
+                      ),
                     ),
-                    child: SvgPicture.asset(iPhone),
-                  ),
+                    InkWell(
+                      onTap: (){
+                        //_makePhoneCall(widget.customerNumber!);
+                        _launchUrl(widget.customerNumber);
+
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                          right: 10,
+                          top: 10
+                        ),
+                        height: 40,
+                        width: 40,
+                        padding: const EdgeInsets.all(12),
+
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 5,
+                              blurRadius: 5,
+                              offset: Offset(0,0)
+                            )
+                          ],
+                          color: Colors.white,
+                          shape: BoxShape.circle
+                        ),
+                        child: SvgPicture.asset(iPhone),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
@@ -376,7 +429,9 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildRichText(text1: widget.pickupLocation!.toString(),text2: widget.destination!.toString(),),
+                        SizedBox(
+                            width: width-260,
+                            child: buildRichText(text1: widget.pickupLocation!.toString(),text2: widget.address!.toString(),)),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15,
@@ -388,7 +443,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                           ),
                           child: Center(
                             child: Text(
-                              "Point to Point",
+                                widget.trippType.toString()=="Drop"? "Drop":"Point to Point",
                               style: TextStyle(
                                   color: cDarkBlue.withOpacity(.8),
                                   fontWeight: FontWeight.w500,
@@ -397,7 +452,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                             ),
                           ),
                         ),
-              buildRichText(text1: widget.destination!.toString(),text2: widget.destination!.toString(),),
+              buildRichText(text1: widget.destination!.toString(),text2: widget.remark!="null"?"No Remarks":widget.remark.toString(),),
 
 
 
@@ -414,12 +469,12 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                           vertical: 3
                       ),
                       decoration: BoxDecoration(
-                          color:widget.bookingType.toString()=="Live"?Colors.green: cPrimaryColor,
+                          color:widget.driverStatus.toString()=="Live"?Colors.green: cPrimaryColor,
                           borderRadius: BorderRadius.circular(15)
                       ),
                       child:  Center(
                         child: Text(
-                          widget.bookingType.toString(),
+                          widget.driverStatus.toString(),
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,

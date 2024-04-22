@@ -59,7 +59,7 @@ class Driver {
   String? salaryType;
   String? districts;
   String? hPhone;
-  String? age;
+  Null? age;
   String? activeLocation;
   String? bloodGroup;
   String? profile;
@@ -70,6 +70,8 @@ class Driver {
   String? deviceType;
   String? createdAt;
   String? updatedAt;
+  int? star;
+  String? grade;
 
   Driver(
       {this.id,
@@ -96,7 +98,9 @@ class Driver {
         this.status,
         this.deviceType,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.star,
+        this.grade});
 
   Driver.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -124,6 +128,8 @@ class Driver {
     deviceType = json['device_type'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    star = json['star'];
+    grade = json['grade'];
   }
 
   Map<String, dynamic> toJson() {
@@ -153,6 +159,8 @@ class Driver {
     data['device_type'] = this.deviceType;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['star'] = this.star;
+    data['grade'] = this.grade;
     return data;
   }
 }

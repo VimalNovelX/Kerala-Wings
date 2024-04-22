@@ -1,16 +1,10 @@
-import 'package:action_slider/action_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:kerala_wings/data/api_services.dart';
-import 'package:kerala_wings/data/models/otp_model.dart';
-import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
-import 'package:kerala_wings/source/constants/images.dart';
-import 'package:kerala_wings/source/features/screens/profile/profile_setup_screen.dart';
-import 'package:kerala_wings/utils/toastUtil.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../../utils/constants.dart';
+import '../../home/home_screen.dart';
 import 'otp_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,8 +17,33 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _phoneNumberController = TextEditingController();
 
+  fetchData()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    driverId =prefs.getString('driverId');
+    driverName =prefs.getString('driverName');
+    driverCode =prefs.getString('driverCode');
+    driverType =prefs.getString('driverType');
+    driverStatus =prefs.getString('driverStatus');
+    driverProfile =prefs.getString('driverProfile');
+    driverGrade =prefs.getString('driverGrade');
+    driverRating =prefs.getString('driverRating');
 
 
+    print("userId==>$driverId");
+    print("userId==>$driverName");
+    print("userId==>$driverCode");
+    print("userId==>$driverStatus");
+    print("userId==>$driverType");
+    print("userId==>$driverProfile");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             InkWell(
               onTap: (){
+                driverId!=null?
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(
+                  driverId:  driverId,
+                )), (route) => false):
+
                 Get.bottomSheet(
                   OtpBottomSheet(phoneNumberController: _phoneNumberController)
                 );

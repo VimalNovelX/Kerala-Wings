@@ -4,8 +4,10 @@ import 'package:action_slider/action_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:in_app_notification/in_app_notification.dart';
 import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../data/api_services.dart';
 import '../../../../../data/models/otp_model.dart';
@@ -43,7 +45,87 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
     otpModel = NetworkHelper().getOtp(context: context,phone:widget._phoneNumberController.text );
     return otpModel;
 
+
+
+
+
+
   }
+
+  getOtp()async{
+    sendOtp();
+    var data = await NetworkHelper().login(context: context, phone: widget._phoneNumberController.text);
+
+    if (data["status"] == "success") {
+      driverId =  data['data']['driver']['id'];
+      driverCode =data['data']['driver']['code'];
+      driverName =data['data']['driver']['f_name'];
+      driverType =data['data']['driver']['driver_type'];
+      driverAddress =data['data']['driver']['address'];
+      driverProfile =data['data']['driver']['profile'];
+      driverStatus =data['data']['driver']['status'];
+      driverRating =data['data']['driver']['star'];
+      driverGrade =data['data']['driver']['grade'];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('driverId', data["data"]['driver']["id"].toString());
+      await prefs.setString('driverCode', data["data"]['driver']["code"].toString());
+      await prefs.setString('driverType', data["data"]['driver']["driver_type"].toString());
+      await prefs.setString('driverName', data["data"]['driver']["f_name"].toString());
+      await prefs.setString('driverStatus', data["data"]['driver']["status"].toString());
+      await prefs.setString('driverProfile', data["data"]['driver']["profile"].toString());
+      await prefs.setString('driverAddress', data["data"]['driver']["address"].toString());
+      await prefs.setString('driverRating', data["data"]['driver']["star"].toString());
+      await prefs.setString('driverGrade', data["data"]['driver']["grade"].toString());
+      // //name = data.data!.name.toString();
+      // email =emailController.text;
+      // phone = data.data!.mobNo.toString();
+
+      //parentId = data["data"]["customer_id"].toString();
+      // proPic = data["data"]["image"].toString();
+
+      // await SharedPrefUtil.writeString(
+      //     keyAccessToken, data.data!.iD.toString());
+      // await SharedPrefUtil.writeString(keyUserData, jsonEncode(data.data));
+      // ToastUtil.show(data.msg.toString());
+      // await SharedPrefUtil.writeBoolean(keyIsLoggedIn, true);
+      // userId = data["data"]["customer_id"].toString();
+      // parentId = data["data"]["customer_id"].toString();
+      if (mounted) {
+
+        print("userId==>$driverId");
+
+        driverCode!=null &&  widget._phoneNumberController.text.isNotEmpty &&widget._phoneNumberController.text.length==10?
+
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel,
+          driverId:  id,
+        )), (route) => false):
+        widget._phoneNumberController.text.isNotEmpty && widget._phoneNumberController.text.length==10?
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen(phone:widget._phoneNumberController.text))):
+
+
+        Fluttertoast.showToast(
+          msg: 'Successfully logged in!!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+
+      } else {
+
+        ToastUtil.show(data.msg.toString());
+      }
+    } else {
+
+      ToastUtil.show(data.msg.toString());
+    }
+
+  }
+
+
+
+
   @override
   Widget build(BuildContext context, ) {
     return Container(
@@ -82,7 +164,8 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
             builder: (context, AsyncSnapshot<OtpModel?>snapshot) {
               if(snapshot.hasData){
                 var otp = snapshot.data!.data!.otp;
-       id = snapshot.data!.data!.driver!.id;
+
+                snapshot.data!.data!.driver!=null? id = snapshot.data!.data!.driver!.id:null;
                 if (otp != null) {
                   InAppNotification.show(child: NotificationBody(count: otp,), context: context);
                   // Split the OTP into individual characters
@@ -201,12 +284,16 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
               widget._phoneNumberController.text.isNotEmpty? controller.success():controller.reset();
 
 Future.delayed(Duration(seconds: 3));
-print("drivercode=>$drivercode");
+print("drivercode=>$driverCode");
 
 
-              drivercode!=null &&  widget._phoneNumberController.text.isNotEmpty &&widget._phoneNumberController.text.length==10?
+              driverCode!=null &&  widget._phoneNumberController.text.isNotEmpty &&widget._phoneNumberController.text.length==10?
 
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel,
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>
+                  HomeScreen(driverProfile:driverProfile,
+              driverStatus : driverStatus,
+              driverName:driverName,
+
               driverId:  id,
               )), (route) => false):
               widget._phoneNumberController.text.isNotEmpty && widget._phoneNumberController.text.length==10?
@@ -236,13 +323,10 @@ print("drivercode=>$drivercode");
               await Future.delayed(const Duration(seconds: 3));
               widget._phoneNumberController.text.isNotEmpty&&widget._phoneNumberController.text.length==10? controller.success():controller.reset();
 
-
-              //widget._phoneNumberController.text.isNotEmpty?  Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>OtpScreen())):
-
-              //widget._phoneNumberController.text.isNotEmpty?
               setState(() {
                 widget._phoneNumberController.text.isNotEmpty&&widget._phoneNumberController.text.length==10? _otpActive =true : ToastUtil.show("Please enter phone number!!!");
-                sendOtp();
+                //sendOtp();
+                getOtp();
                 controller.reset();
               });
 
