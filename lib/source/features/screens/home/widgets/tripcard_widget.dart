@@ -68,11 +68,11 @@ class _TripCardWidgetState extends State<TripCardWidget> {
     if (parsedDate.year == currentDate.year &&
         parsedDate.month == currentDate.month &&
         parsedDate.day == currentDate.day) {
-      return 'Today';
+      return 'TODAY';
     } else if (parsedDate.year == tomorrowDate.year &&
         parsedDate.month == tomorrowDate.month &&
         parsedDate.day == tomorrowDate.day) {
-      return 'Tomorrow';
+      return 'TOMORROW';
     } else {
       // If not today or tomorrow, return the actual date
       return "";
@@ -137,34 +137,38 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                       child:  IntrinsicHeight(
                         child: Row(
                           children: [
-                            Text(
-                                widget.date!.toString()+" - " +widget.enDate.toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12
-                              ),
-                            ),
-                           SizedBox(width: 5,),
-                           VerticalDivider(
-                             indent: 2,
-                             endIndent: 2,
-                             thickness: 1,
-                             color: Colors.white,
-                             width: 2,
-
-                           ),
-                            SizedBox(width: 5,),
-
 
                             Text(
                               widget.time!.toString(),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 12
+                                  fontSize: 14
                               ),
                             ),
+                            SizedBox(width: 5,),
+                            VerticalDivider(
+                              indent: 2,
+                              endIndent: 2,
+                              thickness: 1,
+                              color: Colors.white,
+                              width: 2,
+
+                            ),
+                            SizedBox(width: 5,),
+
+                            Text(
+                                widget.date!.toString()+" - " +widget.enDate.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14
+                              ),
+                            ),
+
+
+
+
 
                           ],
                         ),
@@ -175,7 +179,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                       child: Text(
                           widget.customerName!.toString(),
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600
                         ),
                       ),
@@ -193,7 +197,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                                   Colors.blue: widget.vehType.toString()=="Automatic"?
                                   Colors.red:Colors.green,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 12
+                                  fontSize: 14
                               ),
                             ),
                             const SizedBox(width: 5,),
@@ -212,7 +216,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                                 text:  TextSpan(
                                   text: widget.vehNo!.toString(),
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 14,
                                     color: cPrimaryColor,
                                     fontWeight: FontWeight.w500
                                   ),
@@ -223,7 +227,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                                         color: widget.vehType.toString()=="Manual"?
                                         Colors.blue: widget.vehType.toString()=="Automatic"?
                                         Colors.red:Colors.green,
-                                        fontSize: 12,
+                                        fontSize: 14,
 
                                       )
                                     )
@@ -235,31 +239,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        left: 15,
-                        top: 8,
-                        bottom: 10
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 3
-                      ),
-                      decoration: BoxDecoration(
-                        color: cDarkBlue.withOpacity(.1),
-                        borderRadius: BorderRadius.circular(15)
-                      ),
-                      child: Center(
-                        child: Text(
-                       widget.bookingType.toString(),
-                          style: TextStyle(
-                            color: cDarkBlue.withOpacity(.8),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 10
-                          ),
-                        ),
-                      ),
-                    ),
+
                     Padding(
                       padding: const EdgeInsets.only(left: 15.0),
                       child: SizedBox(
@@ -275,7 +255,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 10),
                       child: Text("$today",
                           style: TextStyle(
                               color: Colors.black,
@@ -285,36 +265,33 @@ class _TripCardWidgetState extends State<TripCardWidget> {
 
                       ),
                     ),
-                    InkWell(
-                      onTap: (){
-                        //_makePhoneCall(widget.customerNumber!);
-                        _launchUrl(widget.customerNumber);
-
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          right: 10,
-                          top: 10
+                    Container(
+                      margin: const EdgeInsets.only(
+                          left: 15,
+                          top: 8,
+                          bottom: 10
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 3
+                      ),
+                      decoration: BoxDecoration(
+                          color: cDarkBlue.withOpacity(.1),
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      child: Center(
+                        child: Text(
+                          widget.bookingType.toString(),
+                          style: TextStyle(
+                              color: cDarkBlue.withOpacity(.8),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12
+                          ),
                         ),
-                        height: 40,
-                        width: 40,
-                        padding: const EdgeInsets.all(12),
-
-                        decoration: const BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              spreadRadius: 5,
-                              blurRadius: 5,
-                              offset: Offset(0,0)
-                            )
-                          ],
-                          color: Colors.white,
-                          shape: BoxShape.circle
-                        ),
-                        child: SvgPicture.asset(iPhone),
                       ),
                     ),
+
+
                   ],
                 )
               ],
@@ -447,7 +424,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                               style: TextStyle(
                                   color: cDarkBlue.withOpacity(.8),
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 10
+                                  fontSize: 12
                               ),
                             ),
                           ),
@@ -461,28 +438,65 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                     ),
                   ),
                   const Spacer(),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 3
-                      ),
-                      decoration: BoxDecoration(
-                          color:widget.driverStatus.toString()=="Live"?Colors.green: cPrimaryColor,
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      child:  Center(
-                        child: Text(
-                          widget.driverStatus.toString(),
-                          style: TextStyle(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: (){
+                          //_makePhoneCall(widget.customerNumber!);
+                          _launchUrl(widget.customerNumber);
+
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              right: 10,
+                              top: 10
+                          ),
+                          height: 40,
+                          width: 40,
+                          padding: const EdgeInsets.all(12),
+
+                          decoration: const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black12,
+                                    spreadRadius: 5,
+                                    blurRadius: 5,
+                                    offset: Offset(0,0)
+                                )
+                              ],
                               color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 10
+                              shape: BoxShape.circle
+                          ),
+                          child: SvgPicture.asset(iPhone),
+                        ),
+                      ),
+                      SizedBox(height: 20,),
+
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 3
+                          ),
+                          decoration: BoxDecoration(
+                              color:widget.driverStatus.toString()=="Live"?Colors.green: cPrimaryColor,
+                              borderRadius: BorderRadius.circular(15)
+                          ),
+                          child:  Center(
+                            child: Text(
+                              widget.driverStatus.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
 
 
@@ -501,7 +515,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                          TextSpan(
                           text: "$text1\n",
                           style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: cDarkBlue
                           ),
@@ -509,7 +523,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                             TextSpan(
                               text:  "$text2",
                               style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.grey
                               ),

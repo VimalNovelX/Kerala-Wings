@@ -9,6 +9,7 @@ class Urls {
   static String startDriverTripUrl = "$baseUrl/startDrivertrip";
   static String endTripUrl = "$baseUrl/endTrip";
   static String driverLeaveHistoryUrl = "$baseUrl/driverLeaveHistory";
+  static String appliedLeaveUrl = "$baseUrl/comLeaveList";
   static String driverLeaveApplyUrl = "$baseUrl/driverLeave";
   static String driverTermsNConditionUrl = "$baseUrl/teams_condition";
   static String driverTariffUrl = "$baseUrl/tarif";

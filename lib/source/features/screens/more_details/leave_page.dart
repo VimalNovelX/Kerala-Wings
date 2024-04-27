@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/data/models/leave_history_model.dart';
 import 'package:lottie/lottie.dart';
+import '../../../../data/models/applied_leave_model.dart';
 import '../../../constants/colors.dart';
 import 'apply_leave_widget.dart';
 
@@ -40,7 +41,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     }
   }
 
-  Future<LeaveHistoryModel?>? currentLeaveHistoryModel;
+  Future<AppliedLeaveModel?>? currentLeaveHistoryModel;
   Future<LeaveHistoryModel?>? leaveHistoryModel;
 
 
@@ -62,7 +63,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     // TODO: implement initState
     super.initState();
      leaveHistoryModel = NetworkHelper().leaveHistoryAPI(context: context,driverId: widget.driverId,month: DateTime.now().month,year: DateTime.now().year);
-    currentLeaveHistoryModel=    NetworkHelper().leaveHistoryAPI(context: context,year:DateTime.now().year.toString(),month: DateTime.now().month.toString(),driverId: widget.driverId );
+    currentLeaveHistoryModel=    NetworkHelper().appliedLeaveAPI(context: context,driverId: widget.driverId );
 
   }
 
@@ -96,7 +97,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
               height:  size.height*.25,
               child: FutureBuilder(
                 future: currentLeaveHistoryModel,
-                builder: (context, AsyncSnapshot<LeaveHistoryModel?> snapshot) {
+                builder: (context, AsyncSnapshot<AppliedLeaveModel?> snapshot) {
                  if(snapshot.hasData){
                 if( snapshot.data!.data!.length==0){
                     return  Center(child: Column(

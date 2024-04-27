@@ -397,7 +397,7 @@ return driverViewTripModel;
                                         TextSpan(
                                           text: "Driver",
                                           style: TextStyle(
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             color: Colors.grey.shade400,
                                           ),)
                                       ]
@@ -513,7 +513,7 @@ return driverViewTripModel;
                       ),
 
                     ),
-                    child: buildRow("Amount", "Payable"),
+                    child: buildRow("Current", "Pending"),
                   ),
 
 
@@ -579,7 +579,7 @@ return driverViewTripModel;
                                     text: "More",
                                         style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 12,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w500
                                         ),
                                         children: [
@@ -590,7 +590,7 @@ return driverViewTripModel;
                                             text: "information  ",
                                             style: TextStyle(
                                                 color: Colors.grey.shade400,
-                                                fontSize: 12,
+                                                fontSize: 14,
                                                 fontWeight: FontWeight.w500
                                             ),
                                           )
@@ -666,7 +666,7 @@ return driverViewTripModel;
                                       ),
                                                                         ),
                                                                         child: Center(
-                                      child: Text(tabs[index]),
+                                      child: Text(tabs[index], style: TextStyle(fontSize: 16),),
                                                                         ),
                                                                       );}
                                     ),
@@ -758,7 +758,7 @@ return driverViewTripModel;
                     text: text1,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400
                     ),
                     children: [

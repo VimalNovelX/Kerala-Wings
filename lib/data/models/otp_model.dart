@@ -8,13 +8,13 @@ class OtpModel {
   OtpModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     msg = json['msg'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['msg'] = this.msg;
+    data['status'] = status;
+    data['msg'] = msg.toString();
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -24,22 +24,21 @@ class OtpModel {
 
 class Data {
   Driver? driver;
-  int? otp;
+  int? otp; // Change the type to int
 
   Data({this.driver, this.otp});
 
   Data.fromJson(Map<String, dynamic> json) {
-    driver =
-    json['driver'] != null ? new Driver.fromJson(json['driver']) : null;
-    otp = json['otp'];
+    driver = json['driver'] != "" ? Driver.fromJson(json['driver']) : null;
+    otp = json['otp'] as int; // Parse 'otp' as an int
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.driver != null) {
-      data['driver'] = this.driver!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (driver != null) {
+      data['driver'] = driver!.toJson();
     }
-    data['otp'] = this.otp;
+    data['otp'] = otp;
     return data;
   }
 }

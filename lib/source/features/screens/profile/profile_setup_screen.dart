@@ -668,7 +668,7 @@ class ProfileSetupScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500
                 ),
                 key: _key,
-                onSubmit: controller.areFilled.value && controller.imageFile.value != null ? () {
+                onSubmit:/* controller.areFilled.value &&*/ controller.fNameController.text.isNotEmpty ? () {
                   Get.to(QuestionAnsweringScreen(phone: phone));
                 } : () {
                   GetXSnackBar.show("Note", "Complete your details", true);
