@@ -47,6 +47,14 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
     return otpModel;
  }
 
+ gotoHome(){
+   Future.delayed(Duration(seconds: 7));
+   Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen(phone:widget._phoneNumberController.text)));
+
+ }
+
+
+
   getOtp()async{
   await  sendOtp();
     var data = await NetworkHelper().login(context: context, phone: widget._phoneNumberController.text);
@@ -86,10 +94,13 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
       // await SharedPrefUtil.writeBoolean(keyIsLoggedIn, true);
       // userId = data["data"]["customer_id"].toString();
       // parentId = data["data"]["customer_id"].toString();
+
+      Future.delayed(Duration(seconds: 3));
       if (mounted) {
 
         print("userId==>$driverId");
-       // Future.delayed(Duration(seconds: 3));
+
+
         driverCode!=null &&  widget._phoneNumberController.text.isNotEmpty &&widget._phoneNumberController.text.length==10?
 
 
@@ -98,8 +109,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
           driverId:  id,
         )), (route) => false):
         widget._phoneNumberController.text.isNotEmpty && widget._phoneNumberController.text.length==10?
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen(phone:widget._phoneNumberController.text))):
-
+       gotoHome():
 
         Fluttertoast.showToast(
           msg: 'Successfully logged in!!',

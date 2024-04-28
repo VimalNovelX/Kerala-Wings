@@ -35,7 +35,8 @@ class _ApplyLeaveWidgetState extends State<ApplyLeaveWidget> {
    DateTime? _endDatepicked;
    TimeOfDay? _startTimepicked;
    TimeOfDay? _endTimepicked;
-   String? leaveDays;
+   String leaveDays ="0";
+  bool _chosenValue=false;
   Future<void> _selectDate(BuildContext context) async {
     DateTime now = DateTime.now();
     DateTime tomorrow = DateTime.now().add(Duration(days: 1));
@@ -95,6 +96,7 @@ class _ApplyLeaveWidgetState extends State<ApplyLeaveWidget> {
       setState(() {
         _startTime.text = _startTimepicked!.format(context);
       });
+      print(_startTime.text);
     }
   }
   Future<void> _selectEndTime(BuildContext context) async {
@@ -109,6 +111,102 @@ class _ApplyLeaveWidgetState extends State<ApplyLeaveWidget> {
       });
     }
   }
+
+  // Future<void> _selectEndDate(BuildContext context) async {
+  //   DateTime now = DateTime.now();
+  //   DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+  //   DateTime dayAfterTomorrow = DateTime(now.year, now.month, now.day + 2);
+  //
+  //   // Check if it's after 5 PM
+  //   if (now.hour >= 17) {
+  //     // If it's after 5 PM, disable tomorrow
+  //     tomorrow = dayAfterTomorrow;
+  //   }
+  //   _endDatepicked = (await showDatePicker(
+  //     context: context,
+  //     initialDate: tomorrow,
+  //     firstDate: tomorrow,
+  //     lastDate: DateTime(2101),
+  //   ))!;
+  //
+  //   if (_endDatepicked != null) {
+  //     // Show a dialog to select leave days
+  //     int? selectedLeaveDays = await showDialog<int>(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('Select Leave Days'),
+  //           content: Text('How many days are you taking leave for?'),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop(1); // 1 day leave
+  //               },
+  //               child: Text('1 Day'),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop(2); // 2 days leave
+  //               },
+  //               child: Text('2 Days'),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop(3); // 3 days leave
+  //               },
+  //               child: Text('3 Days'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //
+  //     if (selectedLeaveDays != null) {
+  //       // Set the leave days
+  //       setState(() {
+  //         _endDatepicked = _endDatepicked!.add(Duration(days: selectedLeaveDays - 1));
+  //         _endDate.text = DateFormat('dd/MM/yyyy').format(_endDatepicked!);
+  //       });
+  //     }
+  //   }
+  // }
+  //
+  //
+
+  List<String> months = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+
+
+
+
+  ];
+
+
 
   bool isLessThan10Hours(
       {required DateTime start, required TimeOfDay startTime, required DateTime end, required TimeOfDay endTime}) {
@@ -152,13 +250,29 @@ applyLeave({days,fromDate,toDate,driverId,toTime,fromTime}){
   }
 
 
+
+
+
+  time(){
+    _startTime.text =  TimeOfDay(hour: 0, minute: 0).format(context);
+    _startTimepicked=  TimeOfDay(hour: 0, minute: 0);
+    _endTimepicked=TimeOfDay(hour: 11, minute: 59);
+    _endTime.text = TimeOfDay(hour: 11, minute: 59).format(context);
+  }
+
+
+
+@override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    time();
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    _startTime.text =  TimeOfDay(hour: 0, minute: 0).format(context);
-    _startTimepicked=  TimeOfDay(hour: 0, minute: 0);
-_endTimepicked=TimeOfDay(hour: 11, minute: 59);
-    _endTime.text = TimeOfDay(hour: 11, minute: 59).format(context);
+
     return  SingleChildScrollView(
       child: Container(
         width: double.infinity,
@@ -249,9 +363,12 @@ _endTimepicked=TimeOfDay(hour: 11, minute: 59);
                       onTap: () => _selectTime(context),
                       controller: _startTime,
                       readOnly: true,
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500),
                       decoration: const InputDecoration(
 
-                        hintText: "12:00 AM",
+                        hintText: /*"12:00 AM"*/"",
                         border: InputBorder.none,
                         hintStyle: TextStyle(
                             color: Colors.grey,
@@ -263,23 +380,127 @@ _endTimepicked=TimeOfDay(hour: 11, minute: 59);
                 ],
               ),
             ),
-            Row(
-              children: [
-                buildText(color: cPrimaryColor,text: "End Date",weight: FontWeight.w600,size: 18.0),
-              Expanded(child: SizedBox(),),
+            SizedBox(
+              height: 40,
+              child: Row(
+                children: [
+                  buildText(color: cPrimaryColor,text: "End Date",weight: FontWeight.w600,size: 18.0),
+                Expanded(child: SizedBox(),),
 
-                _startTime.text.isNotEmpty&&_startDate.text.isNotEmpty&&_endTime.text.isNotEmpty&&
-                    _endDate.text.isNotEmpty?
-                isLessThan10Hours(end: _endDatepicked!,endTime: _endTimepicked!,start: _startDatepicked!,startTime: _startTimepicked!)?
-                buildText(color: Colors.black,text: "Half  \n Day  ",weight: FontWeight.w600,size: 12.0):
+                  _startTime.text.isNotEmpty&&_startDate.text.isNotEmpty&&_endTime.text.isNotEmpty&&
+                      _endDate.text.isNotEmpty?
+                  isLessThan10Hours(end: _endDatepicked!,endTime: _endTimepicked!,start: _startDatepicked!,startTime: _startTimepicked!)?
+                  buildText(color: Colors.black,text: "Half  \n Day  ",weight: FontWeight.w600,size: 12.0):
 
-             Row(children: [
-               buildText(color: cPrimaryColor,text: "$leaveDays\t",weight: FontWeight.w600,size: 35.0),
-               buildText(color: Colors.black,text: "Days\nSelected",weight: FontWeight.w600,size: 12.0)
+                  _chosenValue==false?      Row(children: [
+                 InkWell(
+                     onTap: (){
+                       setState(() {
+                         _chosenValue=true;
+                       });
 
-             ],):SizedBox(),
-        
-              ],
+                     },
+                     child: buildText(color: cPrimaryColor,text: "$leaveDays\t",weight: FontWeight.w600,size: 35.0)),
+                 buildText(color: Colors.black,text: "Days\nSelected",weight: FontWeight.w600,size: 12.0)
+
+               ],)
+
+                      // :SizedBox(),
+
+                  :  Row(children: [
+                    DropdownButton<String>(borderRadius: BorderRadius.circular(15),
+
+                      focusColor: Colors.yellow.shade100,
+                      elevation: 2,
+                      value: leaveDays,
+                      icon: Icon(Icons.arrow_forward_ios_rounded),
+                      underline:  SizedBox(),
+                      //elevation: 5,
+                      style: TextStyle(color: Colors.white,fontSize: 14),
+                      iconEnabledColor:Colors.black,
+                   iconSize: 1,
+                      alignment: Alignment.center,
+
+                      //itemHeight: 50,
+                      padding: EdgeInsets.symmetric(vertical: 2,horizontal: 1),
+                      isDense: false,
+                      menuMaxHeight: 200,
+                      //itemHeight: 80,
+                      //itemHeight: 80,
+                      items: months.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child:  buildText(color: cPrimaryColor,text: value,weight: FontWeight.w600,size: 35.0),
+                        );
+                      }).toList(),
+                      hint: buildText(color: cPrimaryColor,text: "$leaveDays\t",weight: FontWeight.w600,size: 35.0),
+                      onChanged: (String? value) {
+                        int selectedMonthIndex = months.indexOf(value!);
+                        setState(() {
+                          leaveDays = value;
+                          _startDatepicked = DateTime.now();
+                          _startDate.text = DateFormat('dd/MM/yyyy').format(_startDatepicked!);
+                          _endDatepicked = DateTime.now();
+                          _endDatepicked = _endDatepicked!.add(Duration(days: int.parse(leaveDays) - 1));
+                          _endDate.text = DateFormat('dd/MM/yyyy').format(_endDatepicked!);
+                        });
+print(_endDate.text);
+print(_startDatepicked);
+
+
+                      },
+                    ),
+                    buildText(color: Colors.black,text: "Days\nSelected",weight: FontWeight.w600,size: 12.0)
+
+                  ],):Row(children: [
+                    DropdownButton<String>(borderRadius: BorderRadius.circular(15),
+
+                      focusColor: Colors.yellow.shade100,
+                      elevation: 2,
+                      value: leaveDays,
+                      icon: Icon(Icons.arrow_forward_ios_rounded),
+                      underline:  SizedBox(),
+                      //elevation: 5,
+                      style: TextStyle(color: Colors.white,fontSize: 14),
+                      iconEnabledColor:Colors.black,
+                      iconSize: 1,
+                      alignment: Alignment.center,
+
+                      //itemHeight: 50,
+                      padding: EdgeInsets.symmetric(vertical: 2,horizontal: 1),
+                      isDense: false,
+                      menuMaxHeight: 200,
+                      //itemHeight: 80,
+                      //itemHeight: 80,
+                      items: months.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child:  buildText(color: cPrimaryColor,text: value,weight: FontWeight.w600,size: 35.0),
+                        );
+                      }).toList(),
+                      hint: buildText(color: cPrimaryColor,text: "$leaveDays\t",weight: FontWeight.w600,size: 35.0),
+                      onChanged: (String? value) {
+                        int selectedMonthIndex = months.indexOf(value!);
+                        setState(() {
+                          leaveDays = value;
+                          _startDatepicked = DateTime.now();
+                          _startDate.text = DateFormat('dd/MM/yyyy').format(_startDatepicked!);
+                          _endDatepicked = DateTime.now();
+                          _endDatepicked = _endDatepicked!.add(Duration(days: int.parse(leaveDays) - 1));
+                          _endDate.text = DateFormat('dd/MM/yyyy').format(_endDatepicked!);
+                        });
+                        print(_endDate.text);
+                        print(_startDatepicked);
+
+
+                      },
+                    ),
+                    buildText(color: Colors.black,text: "Days\nSelected",weight: FontWeight.w600,size: 12.0)
+
+                  ],)
+
+                ],
+              ),
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 10),
@@ -316,7 +537,7 @@ _endTimepicked=TimeOfDay(hour: 11, minute: 59);
                       readOnly: true,
                       decoration: const InputDecoration(
 
-                        hintText: "11:59 PM",
+                        hintText: /*"11:59 PM"*/"",
                         border: InputBorder.none,
                         hintStyle: TextStyle(
                             color: Colors.grey,

@@ -45,7 +45,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
   Future<AppliedLeaveModel?>? currentLeaveHistoryModel;
   Future<LeaveHistoryModel?>? leaveHistoryModel;
   Future<CancelLeaveModel?>? cancelLeaveModel;
-
+  String? _chosenValue;
+  String? _chosenYear = "2024";
 
   cancelLeave(driverLeaveId){
 
@@ -62,7 +63,18 @@ class _LeaveScreenState extends State<LeaveScreen> {
     return leaveHistoryModel;
   }
 
-
+List<String> months = ['January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'];
 
 
 
@@ -250,55 +262,163 @@ class _LeaveScreenState extends State<LeaveScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: InkWell(
-            onTap:  () {
-              _showDatePickerDialog();
-
-        print("Selected Month: ${_selectedDate.month}");
-        } ,
+        //     onTap:  () {
+        //       _showDatePickerDialog();
+        //
+        // print("Selected Month: ${_selectedDate.month}");
+        // } ,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                GestureDetector(
+                Container(
+                  //width:120,
+                 padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow.shade100,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: DropdownButton<String>(borderRadius: BorderRadius.circular(15),
 
-                  child: Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.yellow.shade100,
-                      borderRadius: BorderRadius.circular(20),
+                    focusColor: Colors.yellow.shade100,
+                    elevation: 2,
+                    value: _chosenValue,icon: Icon(Icons.arrow_forward_ios_rounded),
+                     underline:  SizedBox(),
+                    //elevation: 5,
+                    style: TextStyle(color: Colors.white,fontSize: 14),
+                    iconEnabledColor:Colors.black,
+                    isExpanded: false,iconSize: 15,
+                    alignment: Alignment.center,
+
+                    //itemHeight: 50,
+                    padding: EdgeInsets.symmetric(vertical: 2,horizontal: 4),
+                    isDense: true,
+                    menuMaxHeight: 200,
+                    items: months.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,style:TextStyle(color:Colors.black,fontSize: 16),),
+                      );
+                    }).toList(),
+                    hint:Text(
+                      DateFormat('MMMM').format(_selectedDate),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                        DateFormat('MMMM').format(_selectedDate),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        Icon(Icons.arrow_forward_ios_rounded, size: 15)
-                      ],
-                    ),
+                    onChanged: (String? value) {
+                      int selectedMonthIndex = months.indexOf(value!);
+                      setState(() {
+                        _chosenValue = value;
+                      });
+
+                      getLeaveHistory(selectedMonth:selectedMonthIndex+1,selectedYear: _chosenYear );
+
+                    },
                   ),
                 ),
+
+
+
+                // GestureDetector(
+                //
+                //   child: Container(
+                //     padding: EdgeInsets.all(4),
+                //     decoration: BoxDecoration(
+                //       color: Colors.yellow.shade100,
+                //       borderRadius: BorderRadius.circular(20),
+                //     ),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         Text(
+                //         DateFormat('MMMM').format(_selectedDate),
+                //           style: TextStyle(fontSize: 18),
+                //         ),
+                //         Icon(Icons.arrow_forward_ios_rounded, size: 15)
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 SizedBox(width: 10),
-                GestureDetector(
+                Container(
+                  //width:120,
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow.shade100,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: DropdownButton<String>(borderRadius: BorderRadius.circular(15),
 
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(20),
+                    focusColor: Colors.yellow.shade100,
+                    elevation: 2,
+                    value: _chosenYear,icon: Icon(Icons.arrow_forward_ios_rounded),
+
+                    //elevation: 5,
+                    style: TextStyle(color: Colors.white,fontSize: 14),
+                    iconEnabledColor:Colors.black,
+                    isExpanded: false,iconSize: 15,
+                    alignment: Alignment.center,underline: SizedBox(),
+
+                    //itemHeight: 50,
+                    padding: EdgeInsets.symmetric(vertical: 2,horizontal: 4),
+                    isDense: true,
+                    menuMaxHeight: 200,
+                    items: <String>[
+                      '2020',
+                      '2021',
+                      '2022',
+                      '2023',
+                      '2024',
+                      '2025',
+                      '2026',
+                      '2027',
+                      '2028',
+                      '2029',
+                      '2030',
+
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,style:TextStyle(color:Colors.black,fontSize: 16),),
+                      );
+                    }).toList(),
+                    hint:Text(
+                      DateFormat('yyyy').format(_selectedDate),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${_selectedDate.year}",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        Icon(Icons.arrow_forward_ios_rounded, size: 15)
-                      ],
-                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _chosenYear = value;
+                      });
+                    },
                   ),
                 ),
+
+
+                // GestureDetector(
+                //
+                //   child: Container(
+                //     padding: EdgeInsets.all(2),
+                //     decoration: BoxDecoration(
+                //       color: Colors.grey.shade300,
+                //       borderRadius: BorderRadius.circular(20),
+                //     ),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         Text(
+                //           "${_selectedDate.year}",
+                //           style: TextStyle(fontSize: 18),
+                //         ),
+                //         Icon(Icons.arrow_forward_ios_rounded, size: 15)
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
