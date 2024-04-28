@@ -8,6 +8,7 @@ import 'package:get/get.dart' as getx;
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
 import 'package:http/http.dart'as http;
+import 'package:kerala_wings/data/models/applied_leave_model.dart';
 import 'package:kerala_wings/data/models/driver_register.dart';
 import 'package:kerala_wings/data/models/driver_terms_n_conditions.dart';
 import 'package:kerala_wings/data/models/leave_history_model.dart';
@@ -80,8 +81,8 @@ class NetworkHelper{
     if (response!.statusCode == 200) {
       var data = jsonDecode(response.body);
 
-      if(data['data']['driver']!=null){
-        driverCode = data['data']['driver']['code'];
+      if(data['data']['driver']!=""){
+        driverCode = data['data']['driver']['code'].toString();
 
       }
 
@@ -270,6 +271,31 @@ class NetworkHelper{
       //ToastUtil.show("${data['msg']}");
 
       return LeaveHistoryModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  //Applied Leave
+  Future<AppliedLeaveModel?> appliedLeaveAPI(
+      {required BuildContext context,year, month,driverId
+      }) async {
+    http.Response? response;
+    response = await _getRequest(
+      context: context,
+      url: "${Urls.appliedLeaveUrl}?driver_id=$driverId",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      },);
+    if (response!.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      //ToastUtil.show("${data['msg']}");
+
+      return AppliedLeaveModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
       debugPrint(response.body);

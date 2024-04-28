@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:in_app_notification/in_app_notification.dart';
 import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,21 +45,16 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
     otpModel = NetworkHelper().getOtp(context: context,phone:widget._phoneNumberController.text );
     return otpModel;
-
-
-
-
-
-
-  }
+ }
 
   getOtp()async{
-    sendOtp();
+  await  sendOtp();
     var data = await NetworkHelper().login(context: context, phone: widget._phoneNumberController.text);
 
-    if (data["status"] == "success") {
-      driverId =  data['data']['driver']['id'];
-      driverCode =data['data']['driver']['code'];
+    Future.delayed(Duration(seconds: 3));
+    if (data["status"] == "success" && data['data']["driver"]!="") {
+      driverId =  data['data']['driver']['id'].toString();
+      driverCode =data['data']['driver']['code'].toString();
       driverName =data['data']['driver']['f_name'];
       driverType =data['data']['driver']['driver_type'];
       driverAddress =data['data']['driver']['address'];
@@ -93,8 +89,10 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
       if (mounted) {
 
         print("userId==>$driverId");
-
+       // Future.delayed(Duration(seconds: 3));
         driverCode!=null &&  widget._phoneNumberController.text.isNotEmpty &&widget._phoneNumberController.text.length==10?
+
+
 
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel,
           driverId:  id,
@@ -118,7 +116,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
       }
     } else {
 
-      ToastUtil.show(data.msg.toString());
+      ToastUtil.show("");
     }
 
   }
@@ -162,10 +160,12 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
             future: otpModel,
             builder: (context, AsyncSnapshot<OtpModel?>snapshot) {
+
               if(snapshot.hasData){
                 var otp = snapshot.data!.data!.otp;
 
                 snapshot.data!.data!.driver!=null? id = snapshot.data!.data!.driver!.id:null;
+
                 if (otp != null) {
                   InAppNotification.show(child: NotificationBody(count: otp,), context: context);
                   // Split the OTP into individual characters
@@ -218,6 +218,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
                   ),
                 );
               } else {
+                print("Hello");
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
@@ -326,10 +327,10 @@ print("drivercode=>$driverCode");
               setState(() {
                 widget._phoneNumberController.text.isNotEmpty&&widget._phoneNumberController.text.length==10? _otpActive =true : ToastUtil.show("Please enter phone number!!!");
                 //sendOtp();
-                getOtp();
-                controller.reset();
-              });
 
+              });
+             await getOtp();
+              controller.reset();
 
 
             },
