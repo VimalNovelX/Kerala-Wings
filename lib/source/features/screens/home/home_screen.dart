@@ -360,7 +360,7 @@ return driverViewTripModel;
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                width: width*.48,
+                                width: width*.4,
                                 child:  Text(
                                  driverName.toString(),
                                   style: TextStyle(
@@ -406,6 +406,7 @@ return driverViewTripModel;
                             ],
                           ),
                           Column(
+                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
@@ -437,6 +438,7 @@ return driverViewTripModel;
                               Row(
                                 children: [
                                   RatingStars(
+
                                     valueLabelVisibility: false,
                                     starCount: 5,
                                     starColor: cYellow,
@@ -458,6 +460,9 @@ return driverViewTripModel;
                             ],
                           ),
                         ],
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10
                       ),
 
                     ),
