@@ -9,6 +9,7 @@ import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/data/models/leave_history_model.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../data/models/applied_leave_model.dart';
+import '../../../../data/models/cancel_leave_model.dart';
 import '../../../constants/colors.dart';
 import 'apply_leave_widget.dart';
 
@@ -43,9 +44,16 @@ class _LeaveScreenState extends State<LeaveScreen> {
 
   Future<AppliedLeaveModel?>? currentLeaveHistoryModel;
   Future<LeaveHistoryModel?>? leaveHistoryModel;
+  Future<CancelLeaveModel?>? cancelLeaveModel;
 
 
+  cancelLeave(driverLeaveId){
 
+    cancelLeaveModel=    NetworkHelper().cancelDriverLeaveAPI(context: context,driverLeaveId:  driverLeaveId);
+
+    return cancelLeaveModel;
+
+  }
 
   getLeaveHistory({selectedYear,selectedMonth}){
 
@@ -141,7 +149,11 @@ class _LeaveScreenState extends State<LeaveScreen> {
                   child: const Text('No'),
                   ),
                   TextButton(
-                  onPressed: () => Navigator.pop(context, true),
+                  onPressed: () {
+
+                    cancelLeave(snapshot.data!.data![index].id.toString());
+
+                    Navigator.pop(context, true);},
                   child: const Text('Yes'),
                   )
                   ],
@@ -180,6 +192,14 @@ class _LeaveScreenState extends State<LeaveScreen> {
                   fontWeight: FontWeight.w600,
                   ),
                   ),
+                    Text(
+                      "${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.data![index].fromDateTime!)).toUpperCase()} \t ${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.data![index].toDateTime!)).toUpperCase()}",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade400,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
 
                   Container(
                   padding: EdgeInsets.all(2),
@@ -189,7 +209,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                   borderRadius: BorderRadius.circular(30)),
                   child: RichText(text:
                   TextSpan(text: " Requested: ", style: TextStyle(fontWeight: FontWeight.w500,color: Colors.blue),
-                  children: [TextSpan(text: "${DateFormat('dd MMM yy').format(DateTime.parse(snapshot.data!.data![index].createdAt!)).toUpperCase()} | ${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.data![index].createdAt!)).toUpperCase()}",style: TextStyle(color: Colors.yellow.shade700)),]),),
+                  children: [TextSpan(text: "${DateFormat('dd MMM yy ').format(DateTime.parse(snapshot.data!.data![index].createdAt!)).toUpperCase()} | ${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.data![index].createdAt!)).toUpperCase()}",style: TextStyle(color: Colors.yellow.shade700)),]),),
 
                   )
 
@@ -333,6 +353,14 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
+                                    Text(
+                                      "${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.data![index].fromDateTime!)).toUpperCase()} \t ${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.data![index].toDateTime!)).toUpperCase()}",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.grey.shade400,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
 
                                     Container(
                                       padding: EdgeInsets.all(2),
@@ -373,7 +401,9 @@ class _LeaveScreenState extends State<LeaveScreen> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        Get.bottomSheet(ApplyLeaveWidget(driverId:widget.driverId));
+                        Get.bottomSheet(
+                            isScrollControlled: true,
+                            ApplyLeaveWidget(driverId:widget.driverId));
                        // startTrip();
                       },
                       child: Container(

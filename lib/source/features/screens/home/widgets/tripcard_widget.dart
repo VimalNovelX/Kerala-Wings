@@ -6,10 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:intl/intl.dart';
+import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/bottom_sheet_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../../data/models/call_monitor_model.dart';
 
 class TripCardWidget extends StatefulWidget {
   final String? customerName;
@@ -79,6 +82,13 @@ class _TripCardWidgetState extends State<TripCardWidget> {
     }
   }
 
+  Future<CallMonitorModel?>? callMonitorModel;
+
+  callMonitor(id){
+    callMonitorModel = NetworkHelper().callMonitorAPI(context: context,id: id);
+
+return callMonitorModel;
+  }
 
 
 
@@ -122,7 +132,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: width*.6,
+                      width: width*.61,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5
@@ -165,6 +175,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                                 fontSize: 14
                               ),
                             ),
+
 
 
 
@@ -255,7 +266,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 10),
                       child: Text("$today",
                           style: TextStyle(
                               color: Colors.black,
@@ -268,6 +279,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                     Container(
                       margin: const EdgeInsets.only(
                           left: 15,
+                          right: 5,
                           top: 8,
                           bottom: 10
                       ),
@@ -443,6 +455,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                     children: [
                       InkWell(
                         onTap: (){
+                          callMonitor(widget.bookingId);
                           //_makePhoneCall(widget.customerNumber!);
                           _launchUrl(widget.customerNumber);
 
@@ -452,8 +465,8 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                               right: 10,
                               top: 10
                           ),
-                          height: 40,
-                          width: 40,
+                          height: 45,
+                          width: 45,
                           padding: const EdgeInsets.all(12),
 
                           decoration: const BoxDecoration(
@@ -477,7 +490,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
                         alignment: Alignment.bottomRight,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
+                              horizontal: 25,
                               vertical: 3
                           ),
                           decoration: BoxDecoration(

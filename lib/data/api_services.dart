@@ -21,6 +21,8 @@ import 'package:kerala_wings/utils/constants.dart';
 import '../utils/shared_preferences.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
+import 'models/call_monitor_model.dart';
+import 'models/cancel_leave_model.dart';
 import 'models/driver_leave_apply_model.dart';
 import 'models/driver_view_trip_model.dart';
 import 'models/end_trip_model.dart';
@@ -240,7 +242,8 @@ class NetworkHelper{
       }, body: {
     "booking_id":bookingId.toString(),
       "trip_start_by":tripStartBy,
-      "amount":"100"
+      "amount":"$amount",
+      "type":'d'
  },);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -303,6 +306,33 @@ class NetworkHelper{
     }
   }
 
+  //cancel Driver Leave
+  Future<CancelLeaveModel?> cancelDriverLeaveAPI(
+      {required BuildContext context,driverLeaveId
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: "${Urls.cancelDriverLeaveUrl}?driver_id=$driverLeaveId",
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+
+        "driver_leave_id":driverLeaveId.toString()
+    },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ToastUtil.show("${data['msg']}");
+
+      return CancelLeaveModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
   //Driver Leave Apply
   Future<DriverLeaveApplyModel?> leaveApplyAPI(
       {required BuildContext context,fromDate,toDate, days,driverId,fromTime,toTime
@@ -329,6 +359,34 @@ class NetworkHelper{
       ToastUtil.show("${data['msg']}");
 
       return DriverLeaveApplyModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  //Driver Leave Apply
+  Future<CallMonitorModel?> callMonitorAPI(
+      {required BuildContext context,id
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: Urls.callMonitorUrl,
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+      "booking_id":"$id"
+
+    },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      //ToastUtil.show("${data['msg']}");
+
+      return CallMonitorModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
       debugPrint(response.body);
