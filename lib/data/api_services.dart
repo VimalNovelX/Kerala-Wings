@@ -443,6 +443,86 @@ class NetworkHelper{
 
 
 
+  //
+  // Future<void> driverRegistrationApi({
+  //   required BuildContext context,
+  //   required String name,
+  //   required String phone,
+  //   required String driverType,
+  //   required String address,
+  //   required String licence,
+  //   required String dob,
+  //   required String licenceExp,
+  //   required String sType,
+  //   required String district,
+  //   required String adhaar,
+  //   required String hPhone,
+  //   required String location,
+  //   required String bGroup,
+  //   required String father,
+  //   qus,
+  //  required String photos,
+  //   required String   licenceFront,
+  //   required String   licenceFrontName,
+  //   required String  licenceBack,
+  //   required String  licenceBackName,
+  //   required String   photoName,
+  // }) async {
+  //   try {
+  //     var profileFile = photos != null ? await MultipartFile.fromFile(photos, filename: photoName) : null;
+  //     var frontLicence = licenceFront != null ? await MultipartFile.fromFile(licenceFront, filename: licenceFrontName) : null;
+  //     var backLicence = licenceBack != null ? await MultipartFile.fromFile(licenceBack, filename: licenceBackName) : null;
+  //     var qusStringMap = qus.toString();
+  //
+  //     var formData = FormData.fromMap({
+  //       "f_name": name,
+  //       "phone": phone,
+  //       "driver_type": driverType,
+  //       "address": address,
+  //       "licence_no": licence,
+  //       "dob": dob,
+  //       "licence_exp": licenceExp,
+  //       "salary_type": sType,
+  //       "districts": district,
+  //       "adhaar_no": adhaar,
+  //       "h_phone": hPhone,
+  //       "active_location": location,
+  //       "front_licence": frontLicence,
+  //       "back_licence": backLicence,
+  //       "profile": profileFile,
+  //       "blood_group": bGroup,
+  //       "qus": qusStringMap,
+  //       "father": father,
+  //     });
+  //
+  //     var response = await uploadFilesData(
+  //       url: Urls.driverRegisterUrl,
+  //       context: context,
+  //       header: {
+  //         "Content-Type": "application/json",
+  //         // "Authorization": "Bearer $token"
+  //       },
+  //       formData: formData,
+  //     );
+  //
+  //     var data = response;
+  //     if (data["status"] == "success") {
+  //       GetXSnackBar.show("Success", data["msg"], false);
+  //       Get.offAll(VerificationScreen());
+  //       print("response----------$data");
+  //     } else {
+  //       GetXSnackBar.show(data["status"], data["msg"], true);
+  //       debugPrint("data---------------$data");
+  //     }
+  //   } catch (e) {
+  //     // Handle exceptions, log or show error message
+  //
+  //     print("qus-------$qus");
+  //     print("Error in driverRegistrationApi: $e");
+  //     GetXSnackBar.show("Error", "An error occurred. Please try again.", true);
+  //   }
+  // }
+
 
   Future<void> driverRegistrationApi({
     required BuildContext context,
@@ -461,17 +541,21 @@ class NetworkHelper{
     required String bGroup,
     required String father,
     qus,
-   required String photos,
-    required String   licenceFront,
-    required String   licenceFrontName,
-    required String  licenceBack,
-    required String  licenceBackName,
-    required String   photoName,
+    required String photos,
+    required String licenceFront,
+    required String licenceFrontName,
+    required String licenceBack,
+    required String licenceBackName,
+    required String photoName,
   }) async {
     try {
-      var profileFile = photos != null ? await MultipartFile.fromFile(photos, filename: photoName) : null;
-      var frontLicence = licenceFront != null ? await MultipartFile.fromFile(licenceFront, filename: licenceFrontName) : null;
-      var backLicence = licenceBack != null ? await MultipartFile.fromFile(licenceBack, filename: licenceBackName) : null;
+      if (photos.isEmpty || licenceFront.isEmpty || licenceBack.isEmpty) {
+        throw Exception("One or more file paths are empty.");
+      }
+
+      var profileFile = await MultipartFile.fromFile(photos, filename: photoName);
+      var frontLicence = await MultipartFile.fromFile(licenceFront, filename: licenceFrontName);
+      var backLicence = await MultipartFile.fromFile(licenceBack, filename: licenceBackName);
       var qusStringMap = qus.toString();
 
       var formData = FormData.fromMap({
@@ -516,7 +600,6 @@ class NetworkHelper{
       }
     } catch (e) {
       // Handle exceptions, log or show error message
-
       print("qus-------$qus");
       print("Error in driverRegistrationApi: $e");
       GetXSnackBar.show("Error", "An error occurred. Please try again.", true);
@@ -524,153 +607,6 @@ class NetworkHelper{
   }
 
 
-  Future<DriverRegisterModel?> driversRegisterApi(
-      {required BuildContext context,f_name,phone,
-        driverType,address,licenceNo,dob,licenceExp,
-        salaryType,districts,adhaarNo,hPhone,
-        activeLocation,frontLicence,backLicence,
-        profile,bloodGroup,qus,father
-      }) async {
-    http.Response? response;
-    response = await _multiPartPostRequest(
-      context: context,
-      url: "${Urls.driverRegisterUrl}",
-      header: {
-        "Content-Type": "application/json",
-        // "Authorization": "Bearer $token"
-      }, body: {
-    "f_name":f_name,
-    "phone":phone,
-    "driver_type":driverType,
-    "address":address,
-    "licence_no":licenceNo,
-    "dob":dob,
-    "licence_exp":licenceExp,
-    "salary_type":salaryType,
-    "districts":districts,
-    "adhaar_no":adhaarNo,
-    "h_phone":hPhone,
-    "active_location":activeLocation,
-    "front_licence":frontLicence,
-    "back_licence":backLicence,
-    "profile":profile,
-    "blood_group":bloodGroup,
-    "qus":"",
-   // "qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
-    "father":father,
- }, fileList: [],);
-    if (response.statusCode == 200) {
-      return DriverRegisterModel.fromJson(jsonDecode(response.body));
-    } else {
-      ToastUtil.show("Server Error Please try After sometime");
-      debugPrint(response.body);
-      return null;
-    }
-  }
-
-
-//
-// //class_student_list
-//   Future<StudentListModel?> classStudentList(
-//       {required BuildContext context,className, section}) async {
-//     http.Response? response;
-//     response = await _postRequest(
-//       context: context,
-//       url: "${Urls.getStudentListUrl}",
-//       header: {
-//         "Content-Type": "application/json",
-//         // "Authorization": "Bearer $token"
-//       }, body: {"class":className,
-//       "section":section},);
-//     if (response.statusCode == 200) {
-//       return StudentListModel.fromJson(jsonDecode(response.body));
-//     } else {
-//       ToastUtil.show("Server Error Please try After sometime");
-//       debugPrint(response.body);
-//       return null;
-//     }
-//   }
-//
-// //present Students List
-//
-//   Future<PresentStudentsModel?> presentStudentList(
-//       {required BuildContext context,className, section}) async {
-//     http.Response? response;
-//     response = await _postRequest(
-//       context: context,
-//       url: "${Urls.viewPresentUrl}",
-//       header: {
-//         "Content-Type": "application/json",
-//         // "Authorization": "Bearer $token"
-//       }, body: {"class":className,
-//       "section":section,"date":"2023-06-20",
-//       "period": "P1"},);
-//     if (response.statusCode == 200) {
-//       return PresentStudentsModel.fromJson(jsonDecode(response.body));
-//     } else {
-//       ToastUtil.show("Server Error Please try After sometime");
-//       debugPrint(response.body);
-//       return null;
-//     }
-//   }
-//
-//
-//
-// //present Students List
-//
-//   Future<AbsentStudentsModel?> absentStudentsApi(
-//       {required BuildContext context,className, section, date}) async {
-//     http.Response? response;
-//     response = await _postRequest(
-//       context: context,
-//       url: "${Urls.viewAbsentUrl}",
-//       header: {
-//         "Content-Type": "application/json",
-//         // "Authorization": "Bearer $token"
-//       }, body: {"class":className,
-//       "date":"2023-06-20",
-//       "section":section,
-//       "period": "P2"},);
-//     if (response.statusCode == 200) {
-//       return AbsentStudentsModel.fromJson(jsonDecode(response.body));
-//     } else {
-//       ToastUtil.show("Server Error Please try After sometime");
-//       debugPrint(response.body);
-//       return null;
-//     }
-//   }
-//
-//
-// //submit attendance
-//
-//   PeriodAttendanceModel? retrieveAttendanceData;
-//
-//   Future<SubmitAttendModel?> submitAttendanceApi(
-//       {required BuildContext context,className, section,date, }) async {
-//     http.Response? response;
-//     response = await _postRequest(
-//       context: context,
-//       url: "${Urls.submitAttendanceUrl}",
-//       header: {
-//         "Content-Type": "application/json",
-//         // "Authorization": "Bearer $token"
-//       }, body: {
-//       "AttDate":"2023-06-20",
-//       "class":className,
-//       "Sec":section,"attendance":jsonEncode(retrieveAttendanceData!.attendance),
-//       //"attendance":jsonEncode({"STU20": "Present", "STU21": "Absent"}),
-//       "Period":"P1"
-//
-//
-//     },);
-//     if (response.statusCode == 200) {
-//       return SubmitAttendModel.fromJson(jsonDecode(response.body));
-//     } else {
-//       ToastUtil.show("Server Error Please try After sometime");
-//       debugPrint(response.body);
-//       return null;
-//     }
-//   }
 
 
 

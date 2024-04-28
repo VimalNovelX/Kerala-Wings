@@ -40,6 +40,26 @@ class ProfileSetupScreen extends StatelessWidget {
     selectBloodGroup = value;
   }
 
+
+  onSubmit(){
+    if(controller.areFilled.value == false){
+      GetXSnackBar.show("Error", "Complete your details", true);
+    } else if(controller.imageFile.value == null){
+      GetXSnackBar.show("Error", "Add your profile profile photo", true);
+
+    } else if(controller.drivingLicenceImages.length != 2){
+      GetXSnackBar.show("Error", "Please select your licence front and back images", true);
+
+    } else if(selectedRadio.value == -1){
+      GetXSnackBar.show("Error", "Please accept terms and condition", true);
+
+    }
+    else {
+      Get.to(QuestionAnsweringScreen(phone: phone));
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -668,12 +688,9 @@ class ProfileSetupScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500
                 ),
                 key: _key,
-                onSubmit:/* controller.areFilled.value &&*/ controller.fNameController.text.isNotEmpty ? () {
-                  Get.to(QuestionAnsweringScreen(phone: phone));
-                } : () {
-                  GetXSnackBar.show("Note", "Complete your details", true);
+                onSubmit: (){
+                  onSubmit();
                 },
-
 
 
                //  onSubmit: controller.areFilled.value  ? () {

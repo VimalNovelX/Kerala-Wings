@@ -149,6 +149,7 @@ class SelectProfileController extends GetxController {
 
  void registerDriver(context,qusDetails,phone) async {
    try {
+
      NetworkHelper().driverRegistrationApi(
          context: context,
          name: nameController.text,
