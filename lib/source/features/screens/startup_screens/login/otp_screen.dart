@@ -47,9 +47,23 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
     return otpModel;
  }
 
- gotoHome(){
-   Future.delayed(Duration(seconds: 7));
-   Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen(phone:widget._phoneNumberController.text)));
+ // gotoHome(){
+ //   Future.delayed(Duration(seconds: 7));
+ //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>ProfileSetupScreen(phone:widget._phoneNumberController.text)));
+ //
+ // }
+
+  Future<void> gotoHome() async {
+    await Future.delayed(Duration(seconds: 7));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder) => ProfileSetupScreen(phone: widget._phoneNumberController.text)));
+  }
+
+ goLogHome()async{
+   await Future.delayed(Duration(seconds: 7));
+   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel,
+     driverId:  id,
+   )), (route) => false);
+
 
  }
 
@@ -105,9 +119,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
 
 
 
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=>HomeScreen(otpModel:otpModel,
-          driverId:  id,
-        )), (route) => false):
+       goLogHome():
         widget._phoneNumberController.text.isNotEmpty && widget._phoneNumberController.text.length==10?
        gotoHome():
 
@@ -126,7 +138,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
       }
     } else {
 
-      ToastUtil.show("");
+      print("error");
     }
 
   }

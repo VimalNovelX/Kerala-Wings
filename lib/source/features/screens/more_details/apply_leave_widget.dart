@@ -388,7 +388,7 @@ applyLeave({days,fromDate,toDate,driverId,toTime,fromTime}){
                 Expanded(child: SizedBox(),),
 
                   _startTime.text.isNotEmpty&&_startDate.text.isNotEmpty&&_endTime.text.isNotEmpty&&
-                      _endDate.text.isNotEmpty?
+                      _endDate.text.isNotEmpty&& _startDate.text== _endDate.text?
                   isLessThan10Hours(end: _endDatepicked!,endTime: _endTimepicked!,start: _startDatepicked!,startTime: _startTimepicked!)?
                   buildText(color: Colors.black,text: "Half  \n Day  ",weight: FontWeight.w600,size: 12.0):
 

@@ -131,6 +131,7 @@ return callMonitorModel;
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    //topBox
                     Container(
                       width: width*.61,
                       padding: const EdgeInsets.symmetric(
@@ -185,6 +186,8 @@ return callMonitorModel;
                         ),
                       ),
                     ),
+                    //topBox
+
                      Padding(
                       padding: EdgeInsets.only(left: 15.0,top: 8,bottom: 2),
                       child: Text(
@@ -263,48 +266,16 @@ return callMonitorModel;
                   ],
                 ),
 
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 10),
-                      child: Text("$today",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17
-                          )
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0,bottom:4,left: 5,right: 15),
+                  child: Text("$today",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17
+                      )
 
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                          left: 15,
-                          right: 5,
-                          top: 8,
-                          bottom: 10
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 3
-                      ),
-                      decoration: BoxDecoration(
-                          color: cDarkBlue.withOpacity(.1),
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      child: Center(
-                        child: Text(
-                          widget.bookingType.toString(),
-                          style: TextStyle(
-                              color: cDarkBlue.withOpacity(.8),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12
-                          ),
-                        ),
-                      ),
-                    ),
-
-
-                  ],
+                  ),
                 )
               ],
             ),
@@ -317,7 +288,7 @@ return callMonitorModel;
                 // mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
-                    height: 110,
+                    height: 120,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -413,7 +384,7 @@ return callMonitorModel;
                   ),
                   const SizedBox(width: 5,),
                   SizedBox(
-                    height: 110,
+                    height: 120,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -452,7 +423,36 @@ return callMonitorModel;
                   const Spacer(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Container(
+                        width:100,
+                        margin: const EdgeInsets.only(
+                            left: 15,
+                            right: 5,
+                            top: 8,
+                            bottom: 10
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 3
+                        ),
+                        decoration: BoxDecoration(
+                            color: cDarkBlue.withOpacity(.1),
+                            borderRadius: BorderRadius.circular(15)
+                        ),
+                        child: Center(
+                          child: Text(
+                            widget.bookingType.toString(),
+                            style: TextStyle(
+                                color: cDarkBlue.withOpacity(.8),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12
+                            ),
+                          ),
+                        ),
+                      ),
+
                       InkWell(
                         onTap: (){
                           callMonitor(widget.bookingId);
@@ -486,25 +486,23 @@ return callMonitorModel;
                       ),
                       SizedBox(height: 20,),
 
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25,
-                              vertical: 3
-                          ),
-                          decoration: BoxDecoration(
-                              color:widget.driverStatus.toString()=="Live"?Colors.green: cPrimaryColor,
-                              borderRadius: BorderRadius.circular(15)
-                          ),
-                          child:  Center(
-                            child: Text(
-                              widget.driverStatus.toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12
-                              ),
+                      Container(
+                        width:100,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 3
+                        ),
+                        decoration: BoxDecoration(
+                            color:widget.driverStatus.toString()=="Live"?Colors.green: cPrimaryColor,
+                            borderRadius: BorderRadius.circular(15)
+                        ),
+                        child:  Center(
+                          child: Text(
+                            widget.driverStatus.toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12
                             ),
                           ),
                         ),
