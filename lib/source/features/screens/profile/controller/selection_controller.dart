@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:kerala_wings/data/api_services.dart';
+import 'package:multi_image_picker_view/multi_image_picker_view.dart';
 
 import '../../../../../data/models/driver_register.dart';
 
@@ -50,32 +52,14 @@ class SelectProfileController extends GetxController {
     selectSalary.value = selected;
   }
 
-  // void pickImages(RxList<File> imagesList) async {
-  //   List<XFile>? images = await ImagePicker().pickMultiImage();
-  //   if (images != null) {
-  //     imagesList.addAll(images.map((image) => File(image.path)));
-  //   }
-  // }
-
-  // void pickImages(RxList<File> imagesList) async {
-  //   List<XFile>? images = await ImagePicker().pickMultiImage();
-  //   if (images != null) {
-  //     // Clear the list before adding new images
-  //     imagesList.clear();
-  //     // Add only the first two images
-  //     for (int i = 0; i < images.length && i < 2; i++) {
-  //       imagesList.add(File(images[i].path));
-  //       drivingLicenceImages.add(File(images[i].path)
-  //       );
-  //       frontFile.value = (File(images[0].path));
-  //       backFile.value = (File(images[1].path));
-  //     }
-  //    // drivingLicenceImages = imagesList.map((file) => file.path).toList();
-  //   }
-  // }
 
   void pickImages(RxList<File> imagesList) async {
-    List<XFile>? images = await ImagePicker().pickMultiImage();
+    List<XFile>? images = await ImagePicker().pickMultiImage(
+      // imageQuality: 2,
+
+
+
+    );
     if (images != null) {
       // Clear the list before adding new images
       imagesList.clear();
@@ -90,6 +74,8 @@ class SelectProfileController extends GetxController {
       }
     }
   }
+
+
 
 
 

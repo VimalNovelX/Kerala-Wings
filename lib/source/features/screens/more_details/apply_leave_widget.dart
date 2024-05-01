@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kerala_wings/data/models/driver_leave_apply_model.dart';
+import 'package:kerala_wings/source/features/screens/home/more_details_screen.dart';
 import 'package:kerala_wings/utils/constants.dart';
 import 'package:kerala_wings/utils/toastUtil.dart';
+import 'package:kerala_wings/utils/urls.dart';
+import 'package:http/http.dart' as http;
 import 'package:readmore/readmore.dart';
 
 import '../../../../data/api_services.dart';
@@ -550,60 +555,61 @@ print(_startDatepicked);
               ),
             ),
            SizedBox(height: 20,),
-            SizedBox(
-              height: 60,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        //print("_startDate=>${_startDate.text}=>_endDate=>${_endDate.text}==>$driverId=>${_startTime.text}=>${_endTime.text}");
+           Obx(() =>  InkWell(
+              onTap: _startDate.text.isNotEmpty&&_endDate.text.isNotEmpty&&_startTime.text.isNotEmpty&&
+                  _endTime.text.isNotEmpty? () {
+                //print("_startDate=>${_startDate.text}=>_endDate=>${_endDate.text}==>$driverId=>${_startTime.text}=>${_endTime.text}");
 
 
-                        //print(DateFormat("HH:mm:ss").parse());
+                //print(DateFormat("HH:mm:ss").parse());
 
-                        print(convertTimeOfDayToString(_startTimepicked!));
+                print(convertTimeOfDayToString(_startTimepicked!));
 
-                        print( _startDate.text);
-                        print( _endDate.text);
-                        print( _startTime.text);
-                        print( _endTime.text);
+                print( _startDate.text);
+                print( _endDate.text);
+                print( _startTime.text);
+                print( _endTime.text);
 
-                        _startDate.text.isNotEmpty&&_endDate.text.isNotEmpty&&_startTime.text.isNotEmpty&&
-                            _endTime.text.isNotEmpty?
-                        applyLeave(toDate:convertToFormattedDateTime(_endDate.text),
-                        fromDate:convertToFormattedDateTime(_startDate.text),
-                            fromTime: convertTimeOfDayToString(_startTimepicked!),
-                            toTime:convertTimeOfDayToString(_endTimepicked!),
-                            driverId: widget.driverId,
-                          days: leaveDays
-                        ):ToastUtil.show("Please choose date and time");
 
-                        Navigator.pop(context);
-                        //startTrip();
-                      },
-                      child: Container(
-                        height: 30,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: cPrimaryColor,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "Confirm Leave",
-                            style: TextStyle(
-                              fontSize: 22,fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
+
+                // Get.offAll(MoreDetailsScreen());
+                print("widget id-----${widget.driverId}");
+
+                applyLeaveApi(
+                    widget.driverId,
+                    convertToFormattedDateTime(_startDate.text),
+                    convertToFormattedDateTime(_endDate.text),
+
+                    convertTimeOfDayToString(_startTimepicked!),
+                    convertTimeOfDayToString(_endTimepicked!),
+                    leaveDays
+                );
+
+
+              } : (){
+                    ToastUtil.show("Please choose date and time");
+
+
+                //startTrip();
+              },
+              child: Container(
+                height: 60,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: cPrimaryColor,
+                ),
+                child:  Center(
+                  child:isLoading.value? CircularProgressIndicator() :Text(
+                    "Confirm Leave",
+                    style: TextStyle(
+                      fontSize: 22,fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ),)
 
 
 
@@ -613,6 +619,64 @@ print(_startDatepicked);
       ),
     );
   }
+
+
+  RxBool isLoading = false.obs;
+
+
+  Future applyLeaveApi(driverId,fromDate,toDate,fromTime,toTime,days) async {
+    try {
+      isLoading.value = true;
+      final String apiUrl = Urls.driverLeaveApplyUrl;
+      final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: {
+            // "Content-Type": "application/json",
+
+          },
+          body: {
+            "driver_id":driverId,
+            "from_date":fromDate,
+            "to_date":toDate,
+            "from_time":fromTime,
+            "to_time":toTime,
+            "days":days,
+          }
+      );
+      var data = jsonDecode(response.body);
+
+      if(response.statusCode == 200){
+        isLoading.value = false;
+
+        ToastUtil.show("${data['msg']}");
+        // NetworkHelper().appliedLeaveAPI(context: context)
+        DriverLeaveApplyModel.fromJson(jsonDecode(response.body));
+
+
+        setState(() {
+          NetworkHelper().appliedLeaveAPI(context: context,driverId: widget.driverId.toString());
+
+        });
+
+        Navigator.pop(context, 'First Item');
+
+
+
+
+      } else {
+        isLoading.value = false;
+
+        ToastUtil.show("Server Error Please try After sometime");
+        debugPrint(response.body);
+        return null;
+      }
+    } catch (e) {
+      print("Error-------$e");
+      isLoading.value = false;
+
+    }
+  }
+
 
   Text buildText({text, color, size, weight}) {
     return Text(text, style: TextStyle(

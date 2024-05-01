@@ -38,44 +38,41 @@ class _TarrifPageState extends State<TarrifPage> {
             dashColor: cFont.withOpacity(.5),
           ),
 
-         SizedBox(
-           height: 670,
+         FutureBuilder(
+              future: driverTariffModel,
+              builder: (context, AsyncSnapshot<DriverTariffModel?>snapshot) {
+                if(snapshot.hasData){
+                  return Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
 
-            child: FutureBuilder(
-                 future: driverTariffModel,
-                 builder: (context, AsyncSnapshot<DriverTariffModel?>snapshot) {
-                   if(snapshot.hasData){
-                     return ListView(
-                       shrinkWrap: true,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network('${snapshot.data!.data!.tarif1}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network('${snapshot.data!.data!.tarif2}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network('${snapshot.data!.data!.tarif3}'),
+                        ),
 
-                       children: [
-                         Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Image.network('${snapshot.data!.data!.tarif1}'),
-                         ),
-                         Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Image.network('${snapshot.data!.data!.tarif2}'),
-                         ),
-                         Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Image.network('${snapshot.data!.data!.tarif3}'),
-                         ),
+                      ],
 
-                       ],
+                    ),
+                  );
+                }else if(snapshot.connectionState==ConnectionState.waiting){
 
-                     );
-                   }else if(snapshot.connectionState==ConnectionState.waiting){
+                  return Center(child: CircularProgressIndicator(),);
 
-                     return Center(child: CircularProgressIndicator(),);
-
-                   }else {
-                     return Center(child: Text("Please Try Again!!!"),);
-                   }
-                 }
-             )
-
-         )
+                }else {
+                  return Center(child: Text("Please Try Again!!!"),);
+                }
+              }
+          )
 
 
 

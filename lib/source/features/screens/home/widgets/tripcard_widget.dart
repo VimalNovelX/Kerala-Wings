@@ -133,7 +133,7 @@ return callMonitorModel;
                   children: [
                     //topBox
                     Container(
-                      width: width*.61,
+                      // width: width*.61,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5
@@ -154,7 +154,7 @@ return callMonitorModel;
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 14
+                                  fontSize: 12
                               ),
                             ),
                             SizedBox(width: 5,),
@@ -173,7 +173,7 @@ return callMonitorModel;
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 14
+                                fontSize: 12
                               ),
                             ),
 
@@ -193,7 +193,7 @@ return callMonitorModel;
                       child: Text(
                           widget.customerName!.toString(),
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600
                         ),
                       ),
@@ -211,7 +211,7 @@ return callMonitorModel;
                                   Colors.blue: widget.vehType.toString()=="Automatic"?
                                   Colors.red:Colors.green,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 14
+                                  fontSize: 12
                               ),
                             ),
                             const SizedBox(width: 5,),
@@ -230,7 +230,7 @@ return callMonitorModel;
                                 text:  TextSpan(
                                   text: widget.vehNo!.toString(),
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     color: cPrimaryColor,
                                     fontWeight: FontWeight.w500
                                   ),
@@ -241,7 +241,7 @@ return callMonitorModel;
                                         color: widget.vehType.toString()=="Manual"?
                                         Colors.blue: widget.vehType.toString()=="Automatic"?
                                         Colors.red:Colors.green,
-                                        fontSize: 14,
+                                        fontSize: 12,
 
                                       )
                                     )
@@ -272,7 +272,7 @@ return callMonitorModel;
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
-                          fontSize: 17
+                          fontSize: 15
                       )
 
                   ),
