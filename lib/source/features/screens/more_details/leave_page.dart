@@ -122,7 +122,7 @@ List<String> months = ['January',
                 if( snapshot.data!.data!.length==0){
                     return  Center(child: Column(
                       children: [
-                        Lottie.asset('assets/json/noLeave.json'),
+                        // Lottie.asset('assets/json/noLeave.json'),
                         Text("No Leaves Yet")
                       ],
                     ));}
@@ -434,7 +434,7 @@ List<String> months = ['January',
                       if( snapshot.data!.data!.length==0){
                         return  Center(child: Column(
                           children: [
-                            Lottie.asset('assets/json/noLeave.json'),
+                            // Lottie.asset('assets/json/noLeave.json', height:100),
                             Text("No Leaves Yet")
                           ],
                         ));}
