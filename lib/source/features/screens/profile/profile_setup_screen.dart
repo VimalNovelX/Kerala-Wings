@@ -9,6 +9,7 @@ import 'package:kerala_wings/source/common_widgets/custom_dropdown.dart';
 import 'package:kerala_wings/source/common_widgets/textfield.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
+import 'package:kerala_wings/source/features/screens/more_details/terms_n_condition_page.dart';
 import 'package:kerala_wings/source/features/screens/question_section/question_answering_screeen.dart';
 import 'package:kerala_wings/utils/snack_bar.dart';
 import 'package:kerala_wings/utils/toastUtil.dart';
@@ -647,14 +648,37 @@ class ProfileSetupScreen extends StatelessWidget {
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),
-                                const Text(
-                                  "click to view",
-                                  style: TextStyle(
-                                      height: 1,
-                                      fontSize: 10,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Colors.grey,
-                                      color: Colors.grey),
+                                InkWell(
+                                  onTap:  (){
+                                    // showDialog(
+                                    //   context: context,
+                                    //   builder: (BuildContext context) {
+                                    //     return AlertDialog(
+                                    //
+                                    //       content: TermsNConditions(),);
+                                    //
+                                    //
+                                    //   });
+
+
+
+                                    Get.bottomSheet(
+                                        isScrollControlled: true,
+                                        Container(
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white
+                                      ),
+
+                                    child: SingleChildScrollView(child: TermsNConditions()),));},
+                                  child: const Text(
+                                    "click to view",
+                                    style: TextStyle(
+                                        height: 1,
+                                        fontSize: 10,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.grey,
+                                        color: Colors.grey),
+                                  ),
                                 )
                               ],
                             )

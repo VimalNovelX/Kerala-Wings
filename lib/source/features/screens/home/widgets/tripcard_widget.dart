@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:kerala_wings/data/api_services.dart';
+import 'package:kerala_wings/data/models/seen_update_model.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/bottom_sheet_widget.dart';
@@ -83,9 +84,15 @@ class _TripCardWidgetState extends State<TripCardWidget> {
   }
 
   Future<CallMonitorModel?>? callMonitorModel;
+  Future<SeenUpdateModel?>? seenUpdateModel;
 
   callMonitor(id){
     callMonitorModel = NetworkHelper().callMonitorAPI(context: context,id: id);
+
+return callMonitorModel;
+  }
+  seenUpdate(id){
+    seenUpdateModel = NetworkHelper().seenUpdateAPI(context: context,id: id);
 
 return callMonitorModel;
   }
@@ -98,6 +105,7 @@ return callMonitorModel;
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     var today = getDayStatus(widget.date!);
+    seenUpdate(widget.bookingId);
     return InkWell(
       onTap: (){
         Get.bottomSheet(
@@ -133,7 +141,7 @@ return callMonitorModel;
                   children: [
                     //topBox
                     Container(
-                      width: width*.61,
+                      // width: width*.61,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 15,
                         vertical: 5
@@ -154,7 +162,7 @@ return callMonitorModel;
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 14
+                                  fontSize: 12
                               ),
                             ),
                             SizedBox(width: 5,),
@@ -173,7 +181,7 @@ return callMonitorModel;
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 14
+                                fontSize: 12
                               ),
                             ),
 
@@ -193,7 +201,7 @@ return callMonitorModel;
                       child: Text(
                           widget.customerName!.toString(),
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600
                         ),
                       ),
@@ -211,7 +219,7 @@ return callMonitorModel;
                                   Colors.blue: widget.vehType.toString()=="Automatic"?
                                   Colors.red:Colors.green,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 14
+                                  fontSize: 12
                               ),
                             ),
                             const SizedBox(width: 5,),
@@ -230,7 +238,7 @@ return callMonitorModel;
                                 text:  TextSpan(
                                   text: widget.vehNo!.toString(),
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     color: cPrimaryColor,
                                     fontWeight: FontWeight.w500
                                   ),
@@ -241,7 +249,7 @@ return callMonitorModel;
                                         color: widget.vehType.toString()=="Manual"?
                                         Colors.blue: widget.vehType.toString()=="Automatic"?
                                         Colors.red:Colors.green,
-                                        fontSize: 14,
+                                        fontSize: 12,
 
                                       )
                                     )
@@ -272,7 +280,7 @@ return callMonitorModel;
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
-                          fontSize: 17
+                          fontSize: 15
                       )
 
                   ),
@@ -384,7 +392,7 @@ return callMonitorModel;
                   ),
                   const SizedBox(width: 5,),
                   SizedBox(
-                    height: 120,
+                    height: 140,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,

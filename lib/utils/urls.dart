@@ -15,6 +15,7 @@ class Urls {
   static String callMonitorUrl = "$baseUrl/call_status";
   static String driverTermsNConditionUrl = "$baseUrl/teams_condition";
   static String driverTariffUrl = "$baseUrl/tarif";
+  static String driverSeenUpdateUrl = "$baseUrl/updateSeen";
 
 
 }

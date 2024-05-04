@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../data/models/driver_view_trip_model.dart';
+import '../../../../main.dart';
+import '../../../../notification/notitifcation.dart';
 import '../../../../provider/current_index_provider.dart';
 import 'more_details_screen.dart';
 
@@ -49,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    NotificationAlert.initialize(flutterLocalNotificationsPlugin);
     driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: driverId,type: "");
 
 
@@ -65,7 +68,6 @@ return driverViewTripModel;
   Widget build(BuildContext context) {
     // otPModel =widget.otpModel! ;
     var width = MediaQuery.of(context).size.width;
-
     return Consumer<CurrentIndexProvider>(
         builder: (context, currentIndexProvider, _) {
       return Scaffold(
@@ -317,157 +319,165 @@ return driverViewTripModel;
               //   ),
 
                 Column(children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                        left: 15,
-                        right: 15,
-                        top: 15
-                    ),
-                    padding: const EdgeInsets.only(
-                        top: 10
-                    ),
-                    decoration:  BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(15),
-                          topLeft: Radius.circular(15)
+                  InkWell(
+                    onTap: (){
+
+                      NotificationAlert.showBigTextNotification(title: "Kerala Wings", body: 'New Trip activated', fln: flutterLocalNotificationsPlugin);
+
+                    },
+
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 15,
+                          right: 15,
+                          top: 15
                       ),
-                    ),
-                    child: ListTile(
-                      horizontalTitleGap: 8,
-                      leading:  CircleAvatar(
-                          radius: 25,
-                          child: Padding(
-                            padding: const EdgeInsets.all(1.0),
-                            child: ClipRRect(child:  Image.network('https://keralawingstravel.com/public/assets/images/profile/${driverProfile}',
-                              height: 50,
-                              width: 50,
-
-                              fit: BoxFit.fitWidth,
-                            ),
-                              clipBehavior: Clip.hardEdge,
-
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                          )
-
-
+                      padding: const EdgeInsets.only(
+                          top: 10
                       ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: width*.4,
-                                child:  Text(
-                                 driverName.toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: cFont
+                      decoration:  BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15)
+                        ),
+                      ),
+                      child: ListTile(
+                        horizontalTitleGap: 8,
+                        leading:  CircleAvatar(
+                            radius: 25,
+                            child: Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: ClipRRect(child:  Image.network('https://keralawingstravel.com/public/assets/images/profile/${driverProfile}',
+                                height: 50,
+                                width: 50,
+
+                                fit: BoxFit.fitWidth,
+                              ),
+                                clipBehavior: Clip.hardEdge,
+
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            )
+
+
+                        ),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: width*.4,
+                                  child:  Text(
+                                   driverName.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: cFont
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-
                                 ),
-                              ),
-                              SizedBox(
-                                width: width*.38,
-                                child: DottedLine(
-                                  dashColor: Colors.grey.shade300,
+                                SizedBox(
+                                  width: width*.38,
+                                  child: DottedLine(
+                                    dashColor: Colors.grey.shade300,
+                                  ),
                                 ),
-                              ),
-                              RichText(
-                                  text: TextSpan(
-                                      text: driverGrade.toString(),
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          color: cYellow,
-                                          fontWeight: FontWeight.w600
+                                RichText(
+                                    text: TextSpan(
+                                        text: driverGrade.toString(),
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            color: cYellow,
+                                            fontWeight: FontWeight.w600
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: " ",
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.grey.shade400,
+                                            ),),
+                                          TextSpan(
+                                            text: "Driver",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey.shade400,
+                                            ),)
+                                        ]
+                                    )
+                                )
+                              ],
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 3),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFFEBF4EC),
+                                      borderRadius: BorderRadius.circular(15)
+                                  ),
+                                  child:  Center(
+                                    child: driverStatus.toString()=="1"?Text(
+                                      "ACTIVE",
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: cGreen,
+                                          fontWeight: FontWeight.w500
                                       ),
-                                      children: [
-                                        TextSpan(
-                                          text: " ",
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.grey.shade400,
-                                          ),),
-                                        TextSpan(
-                                          text: "Driver",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey.shade400,
-                                          ),)
-                                      ]
-                                  )
-                              )
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 3),
-                                decoration: BoxDecoration(
-                                    color: const Color(0xFFEBF4EC),
-                                    borderRadius: BorderRadius.circular(15)
-                                ),
-                                child:  Center(
-                                  child: driverStatus.toString()=="1"?Text(
-                                    "ACTIVE",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: cGreen,
-                                        fontWeight: FontWeight.w500
-                                    ),
-                                  ):
-                                  Text(
-                                    "BLOCKED",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.red.shade300,
-                                        fontWeight: FontWeight.w500
+                                    ):
+                                    Text(
+                                      "BLOCKED",
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.red.shade300,
+                                          fontWeight: FontWeight.w500
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 3,),
-                              Row(
-                                children: [
-                                  RatingStars(
+                                const SizedBox(height: 3,),
+                                Row(
+                                  children: [
+                                    RatingStars(
 
-                                    valueLabelVisibility: false,
-                                    starCount: 5,
-                                    starColor: cYellow,
-                                    starSize: 10,
-                                    value: double.parse(driverRating.toString()),
-                                    starOffColor: cFont.withOpacity(.8),
+                                      valueLabelVisibility: false,
+                                      starCount: 5,
+                                      starColor: cYellow,
+                                      starSize: 10,
+                                      value: double.parse(driverRating.toString()),
+                                      starOffColor: cFont.withOpacity(.8),
 
-                                  ),
-                                  const SizedBox(width: 3,),
-                                   Text(
-                                  '${driverRating}.0',
-                                    style: TextStyle(
-                                        color: cYellow,
-                                        fontSize: 12
                                     ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
+                                    const SizedBox(width: 3,),
+                                     Text(
+                                    '${driverRating}.0',
+                                      style: TextStyle(
+                                          color: cYellow,
+                                          fontSize: 12
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10
+                        ),
+
                       ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 10
-                      ),
+
 
                     ),
-
-
                   ),
                   Container(
                     margin: const EdgeInsets.only(
