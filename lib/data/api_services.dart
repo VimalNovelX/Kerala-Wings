@@ -27,6 +27,7 @@ import 'models/driver_leave_apply_model.dart';
 import 'models/driver_view_trip_model.dart';
 import 'models/end_trip_model.dart';
 import 'models/questions_model.dart';
+import 'models/save_fcm_model.dart';
 import 'models/seen_update_model.dart';
 import 'models/tarrif_model.dart';
 
@@ -414,6 +415,34 @@ class NetworkHelper{
       //ToastUtil.show("${data['msg']}");
 
       return SeenUpdateModel.fromJson(jsonDecode(response.body));
+    } else {
+      ToastUtil.show("Server Error Please try After sometime");
+      debugPrint(response.body);
+      return null;
+    }
+  }
+
+
+  Future<SaveDCMTokenModel?> saveFcmTokenApi(
+      {required BuildContext context,userId,fcmToken
+      }) async {
+    http.Response? response;
+    response = await _postRequest(
+      context: context,
+      url: Urls.saveFcmTokenUrl,
+      header: {
+        "Content-Type": "application/json",
+        // "Authorization": "Bearer $token"
+      }, body: {
+      "driver_id":userId.toString(),
+      "fcm_token":fcmToken.toString(),
+
+    },);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      //ToastUtil.show("${data['msg']}");
+
+      return SaveDCMTokenModel.fromJson(jsonDecode(response.body));
     } else {
       ToastUtil.show("Server Error Please try After sometime");
       debugPrint(response.body);

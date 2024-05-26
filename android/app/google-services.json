@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142500878085",
+    "project_id": "keralawings-96197",
+    "storage_bucket": "keralawings-96197.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142500878085:android:da9bceb52eb810f67c496c",
+        "android_client_info": {
+          "package_name": "com.xpectcorps.kerala_wings"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjQGSSaCcKiSIB_iyI5RbXPNiV3_ld41s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

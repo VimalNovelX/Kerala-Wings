@@ -13,3 +13,4 @@ var driverProfile;
 var driverAddress;
 var driverRating;
 var driverGrade;
+var fcmToken;

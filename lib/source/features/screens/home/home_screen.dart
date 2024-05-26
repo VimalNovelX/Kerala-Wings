@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/data/models/otp_model.dart';
+import 'package:kerala_wings/data/models/save_fcm_model.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:kerala_wings/source/constants/images.dart';
 import 'package:kerala_wings/source/features/screens/home/widgets/tripcard_widget.dart';
@@ -47,12 +48,14 @@ class _HomeScreenState extends State<HomeScreen> {
    List tabs = ["All","Assigned","Live"];
 
    Future<DriverViewTripDetailsModel?>? driverViewTripModel;
+   Future<SaveDCMTokenModel?>? saveFcmModel;
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
     NotificationAlert.initialize(flutterLocalNotificationsPlugin);
     driverViewTripModel = NetworkHelper().driverViewTripDetailsApi(context: context,driver_id: driverId,type: "");
+    saveFcmModel = NetworkHelper().saveFcmTokenApi(context: context,userId: driverId,fcmToken: fcmToken);
 
 
    }

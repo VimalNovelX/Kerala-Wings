@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:kerala_wings/data/firebase_api.dart';
 import 'package:kerala_wings/source/constants/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../utils/constants.dart';
@@ -15,6 +16,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  NotificationServices notificationServices = NotificationServices();
+
+
   TextEditingController _phoneNumberController = TextEditingController();
 
   fetchData()async{
@@ -43,6 +48,13 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
     super.initState();
     fetchData();
+    notificationServices.requestNotificationPermissions();
+    notificationServices.foregroundMessage();
+    notificationServices.isRefreshToken();
+    notificationServices.firebaseInit(context);
+    notificationServices.getDeviceToken().then((value){
+      print(value);
+    });
   }
 
   @override

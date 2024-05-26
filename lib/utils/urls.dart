@@ -16,6 +16,7 @@ class Urls {
   static String driverTermsNConditionUrl = "$baseUrl/teams_condition";
   static String driverTariffUrl = "$baseUrl/tarif";
   static String driverSeenUpdateUrl = "$baseUrl/updateSeen";
+  static String saveFcmTokenUrl = "$baseUrl/save_fcm_token";
 
 
 }

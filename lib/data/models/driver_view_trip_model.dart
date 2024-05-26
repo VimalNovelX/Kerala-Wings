@@ -35,7 +35,7 @@ class Data {
   String? customerName;
   String? customerNumber;
   String? address;
-  Null? remark;
+  String? remark;
   String? vehicle;
   String? vehNo;
   String? vehType;
@@ -86,7 +86,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     data['booking_id'] = this.bookingId;
     data['date'] = this.date;
     data['time'] = this.time;
