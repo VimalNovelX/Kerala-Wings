@@ -729,7 +729,7 @@ return driverViewTripModel;
                                       else if(snapshot.connectionState==ConnectionState.waiting){
                                         return Center(child: CircularProgressIndicator(),);
                                       }else{
-                                        return Center(child: Text("Please Try Again"),);
+                                        return Center(child: Text(snapshot.error.toString()),);
                                       }
 
                                       }

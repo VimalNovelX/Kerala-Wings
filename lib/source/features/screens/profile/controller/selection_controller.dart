@@ -1,19 +1,37 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:kerala_wings/data/api_services.dart';
-import 'package:multi_image_picker_view/multi_image_picker_view.dart';
+import 'package:kerala_wings/data/models/driver_register.dart';
 
-import '../../../../../data/models/driver_register.dart';
 
 class SelectProfileController extends GetxController {
-  RxString selectMethod = "Driver".obs;
+
+  final List<String> districts = ['Trivandrum', 'Kollam', 'Pathanamthitta', 'Alappuzha','Kottayam','Idukki','Eranakulam','Thissur','Palakkadu','Malappuram','Kozhikode','Kannur','Kasarragod'];
+  final List<String> bloodGroup = ['A +ve','B +ve','AB +ve','O +ve','A -ve','B -ve','AB -ve','O -ve',];
+
+  final selectedValue = ''.obs;
+  String? selectedDistrict;
+  String? selectBloodGroup;
+  final RxInt selectedRadio = (-1).obs;
+  RxBool isFinished = false.obs;
+
+
+  void onChanged(String? value) {
+    selectedDistrict = value;
+  }
+
+  void onChange(String? value) {
+    selectBloodGroup = value;
+  }
+
+
+
+
+  RxString selectMethod = "cd".obs;
   RxString selectSalary = "Daily".obs;
   late List<String> stringList;
   RxBool isLoading =false.obs;
@@ -61,13 +79,10 @@ class SelectProfileController extends GetxController {
 
     );
     if (images != null) {
-      // Clear the list before adding new images
       imagesList.clear();
-      // Add only the first two images
       for (int i = 0; i < images.length && i < 2; i++) {
         imagesList.add(File(images[i].path));
       }
-      // Update frontFile and backFile if there are at least two images
       if (images.length >= 2) {
         frontFile.value = File(images[0].path);
         backFile.value = File(images[1].path);
@@ -133,24 +148,25 @@ class SelectProfileController extends GetxController {
   }
 
 
- void registerDriver(context,qusDetails,phone) async {
+ void registerDriver(context,
+     {qusDetails, phone, district, bloodGrp, driverType, salaryType}) async {
    try {
 
      NetworkHelper().driverRegistrationApi(
          context: context,
          name: nameController.text,
          phone:phone ,
-         driverType: "cd",
+         driverType: driverType,
          address: addressController.text,
          licence: licenceController.text,
          dob: dobController.text,
          licenceExp: licenceDateController.text,
-         sType: "Monthly",
-         district: "kollam",
+         sType: salaryType,
+         district: district,
          adhaar: adharController.text,
          hPhone: homeMobController.text,
-         location: "cdcndsncd",
-         bGroup: bloodGController.text,
+         location: locController.text,
+         bGroup:bloodGrp,
          father: fNameController.text,
          photoName: imageFile.value != null ? imageFile.value!.path.split("/").last : "",
          photos: imageFile.value != null ? imageFile.value!.path : "",

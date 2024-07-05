@@ -15,7 +15,11 @@ import '../profile/controller/selection_controller.dart';
 
 class QuestionAnsweringScreen extends StatefulWidget {
   final String? phone;
-  QuestionAnsweringScreen({Key? key, this.phone}) : super(key: key);
+  final String? salaryType;
+  final String? bldGrp;
+  final String? district;
+  final String? driverType;
+  QuestionAnsweringScreen({Key? key, this.phone, this.salaryType, this.bldGrp, this.district, this.driverType}) : super(key: key);
 
   @override
   State<QuestionAnsweringScreen> createState() =>
@@ -221,7 +225,17 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
                           if (answers!.contains(null)) {
                              GetXSnackBar.show("Note", "Please answer all questions", true);
                           } else {
-                             controller.registerDriver(context, transformedResponses, widget.phone);
+                             controller.registerDriver(
+                                 context,
+                                qusDetails:  transformedResponses,
+                              phone:widget.phone,
+                               bloodGrp: widget.bldGrp,
+                               district: widget.district,
+                               driverType: widget.driverType,
+                               salaryType: widget.salaryType
+
+
+                             );
                           }
 
                           // print("--------------$transformedResponses");

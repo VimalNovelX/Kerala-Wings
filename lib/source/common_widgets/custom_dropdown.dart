@@ -22,6 +22,7 @@ class CustomDropDown extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: DropdownButtonFormField<String>(
+        isDense: true,
         value: value,
         items:items,
         style: TextStyle(
@@ -35,7 +36,9 @@ class CustomDropDown extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(vertical: 17,horizontal: 15),
           hintText: hintText,
 
-          hintStyle: TextStyle(),
+          hintStyle: TextStyle(
+            fontSize: 12
+          ),
           border: OutlineInputBorder(
             borderSide:  BorderSide.none,
             borderRadius: BorderRadius.circular(10),

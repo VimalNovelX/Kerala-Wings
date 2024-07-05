@@ -46,6 +46,7 @@ class ProfileSetupScreen extends StatelessWidget {
       GetXSnackBar.show("Error", "Complete your details", true);
     } else if(controller.imageFile.value == null){
       GetXSnackBar.show("Error", "Add your profile profile photo", true);
+      print("values-------$selectedDistrict------$selectBloodGroup------${controller.selectMethod.value}----${controller.selectSalary.value}");
 
     } else if(controller.drivingLicenceImages.length != 2){
       GetXSnackBar.show("Error", "Please select your licence front and back images", true);
@@ -55,7 +56,13 @@ class ProfileSetupScreen extends StatelessWidget {
 
     }
     else {
-      Get.to(QuestionAnsweringScreen(phone: phone));
+      Get.to(QuestionAnsweringScreen(
+          phone: phone,
+        bldGrp: selectBloodGroup,
+        district: selectedDistrict,
+        driverType: controller.selectMethod.value,
+        salaryType: controller.selectSalary.value,
+      ));
 
     }
   }
@@ -101,7 +108,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                       style: TextStyle(
                                           color:
                                               controller.selectMethod.value ==
-                                                      "Driver"
+                                                      "cd"
                                                   ? cPrimaryColor
                                                   : cYellow))
                                 ]),
@@ -151,7 +158,7 @@ class ProfileSetupScreen extends StatelessWidget {
                       selectionRow(
                           color: cPrimaryColor,
                           title: "Driver",
-                          index: "Driver",
+                          index: "cd",
                           isSalary: false,
                           textClr: cPrimaryColor),
                       const SizedBox(
@@ -160,7 +167,7 @@ class ProfileSetupScreen extends StatelessWidget {
                       selectionRow(
                           color: cYellow,
                           title: "Cab",
-                          index: "Cab",
+                          index: "td",
                           isSalary: false,
                           textClr: cYellow),
                     ],
@@ -259,7 +266,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                 width: 70,
                                 decoration: BoxDecoration(
                                     color:
-                                        controller.selectMethod.value == "Driver"
+                                        controller.selectMethod.value == "cd"
                                             ? cPrimaryColor.withOpacity(.2)
                                             : cYellow.withOpacity(.3),
                                     borderRadius: BorderRadius.circular(15)),
@@ -269,7 +276,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         color: controller.selectMethod.value ==
-                                                "Driver"
+                                                "cd"
                                             ? cPrimaryColor
                                             : cYellow,
                                         fontSize: 12),
@@ -319,26 +326,26 @@ class ProfileSetupScreen extends StatelessWidget {
                                 // ),
                                 child: Obx(
                                       () => CustomDropDown(
-                                    textClr: controller.selectMethod.value == "Driver"
+                                    textClr: controller.selectMethod.value == "cd"
                                         ? cPrimaryColor
                                         : cYellow,
                                     hintText: "Eg:A+ve",
                                     onChanged: onChange,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Please select your location';
+                                        return 'Select';
                                       } else {
                                         return null;
                                       }
                                     },
-                                    value: selectBloodGroup,
+                                    value: controller.selectBloodGroup,
                                     items: _bloodGroup.map((String gender) {
                                       return DropdownMenuItem<String>(
                                         value: gender,
                                         child: Text(gender),
                                       );
                                     }).toList(),
-                                    color: controller.selectMethod.value == "Driver"
+                                    color: controller.selectMethod.value == "cd"
                                         ? cPrimaryColor.withOpacity(.3)
                                         : cYellow.withOpacity(.3),
                                   ),
@@ -455,7 +462,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                                     backgroundColor: controller
                                                                 .selectMethod
                                                                 .value ==
-                                                            "Driver"
+                                                            "cd"
                                                         ? cPrimaryColor
                                                             .withOpacity(.8)
                                                         : cYellow.withOpacity(.8),
@@ -485,7 +492,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                       child: CircleAvatar(
                                         backgroundColor:
                                             controller.selectMethod.value ==
-                                                    "Driver"
+                                                    "cd"
                                                 ? cPrimaryColor.withOpacity(.3)
                                                 : cYellow.withOpacity(.3),
                                         child: Center(
@@ -526,7 +533,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                 width: 100,
                                 decoration: BoxDecoration(
                                     color:
-                                        controller.selectMethod.value == "Driver"
+                                        controller.selectMethod.value == "cd"
                                             ? cPrimaryColor.withOpacity(.2)
                                             : cYellow.withOpacity(.3),
                                     borderRadius: BorderRadius.circular(15)),
@@ -538,7 +545,7 @@ class ProfileSetupScreen extends StatelessWidget {
                         buildSizedBox(),
                         Obx(
                           () => CustomDropDown(
-                            textClr: controller.selectMethod.value == "Driver"
+                            textClr: controller.selectMethod.value == "cd"
                                 ? cPrimaryColor
                                 : cYellow,
                             hintText: "",
@@ -557,7 +564,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                 child: Text(gender),
                               );
                             }).toList(),
-                            color: controller.selectMethod.value == "Driver"
+                            color: controller.selectMethod.value == "cd"
                                 ? cPrimaryColor.withOpacity(.3)
                                 : cYellow.withOpacity(.3),
                           ),
@@ -566,22 +573,22 @@ class ProfileSetupScreen extends StatelessWidget {
                           height: 20,
                         ),
                         Obx(
-                          () => controller.selectMethod.value == "Driver"
+                          () => controller.selectMethod.value == "cd"
                               ? Center(
                                   child: buildRichText("Salary", " Type", 25,
                                       Colors.grey.shade400))
                               : const SizedBox(),
                         ),
-                        Obx(() => controller.selectMethod.value == "Driver"
+                        Obx(() => controller.selectMethod.value == "cd"
                             ? buildSizedBox()
                             : const SizedBox()),
-                        Obx(() => controller.selectMethod.value == "Driver"
+                        Obx(() => controller.selectMethod.value == "cd"
                             ? buildDottedLine()
                             : const SizedBox()),
-                        Obx(() => controller.selectMethod.value == "Driver"
+                        Obx(() => controller.selectMethod.value == "cd"
                             ? buildSizedBox()
                             : const SizedBox()),
-                        Obx(() => controller.selectMethod.value == "Driver"
+                        Obx(() => controller.selectMethod.value == "cd"
                             ? Row(
                                 children: [
                                   const SizedBox(
@@ -618,7 +625,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.padded,
                                   fillColor: MaterialStateProperty.all(
-                                      controller.selectMethod.value == "Driver"
+                                      controller.selectMethod.value == "cd"
                                           ? cPrimaryColor
                                           : cYellow),
                                   value: 0,
@@ -640,7 +647,7 @@ class ProfileSetupScreen extends StatelessWidget {
                                     "Terms and Condition",
                                     style: TextStyle(
                                         color: controller.selectMethod.value ==
-                                                "Driver"
+                                                "cd"
                                             ? cPrimaryColor
                                             : cYellow,
                                         fontSize: 14,
@@ -681,7 +688,7 @@ class ProfileSetupScreen extends StatelessWidget {
                 sliderButtonIconPadding: 12,
                 sliderButtonIcon: SvgPicture.asset(iLoading),
                 height: 55,
-                outerColor: controller.selectMethod.value == "Driver" ? cPrimaryColor : cYellow,
+                outerColor: controller.selectMethod.value == "cd" ? cPrimaryColor : cYellow,
                 textStyle: const TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -756,7 +763,7 @@ class ProfileSetupScreen extends StatelessWidget {
       text: TextSpan(
           text: text1,
           style: TextStyle(
-              color: controller.selectMethod.value == "Driver"
+              color: controller.selectMethod.value == "cd"
                   ? cPrimaryColor
                   : cYellow,
               fontWeight: FontWeight.w600,
