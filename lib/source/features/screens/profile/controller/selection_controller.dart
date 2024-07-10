@@ -149,7 +149,7 @@ class SelectProfileController extends GetxController {
          district: "kollam",
          adhaar: adharController.text,
          hPhone: homeMobController.text,
-         location: "cdcndsncd",
+         location: locController.text,
          bGroup: bloodGController.text,
          father: fNameController.text,
          photoName: imageFile.value != null ? imageFile.value!.path.split("/").last : "",
