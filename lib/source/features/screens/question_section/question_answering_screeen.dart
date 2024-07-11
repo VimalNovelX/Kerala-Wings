@@ -47,6 +47,7 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Selected grp----------${widget.bldGrp}");
     return FutureBuilder(
         future: questionModel,
         builder: (context,AsyncSnapshot<QuestionsModel?> snapshot){
@@ -225,6 +226,7 @@ class _QuestionAnsweringScreenState extends State<QuestionAnsweringScreen> {
                           if (answers!.contains(null)) {
                              GetXSnackBar.show("Note", "Please answer all questions", true);
                           } else {
+                            print("blood_grp---------${widget.bldGrp}");
                              controller.registerDriver(
                                  context,
                                 qusDetails:  transformedResponses,

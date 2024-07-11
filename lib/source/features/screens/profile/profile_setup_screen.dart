@@ -63,6 +63,7 @@ class ProfileSetupScreen extends StatelessWidget {
         driverType: controller.selectMethod.value,
         salaryType: controller.selectSalary.value,
       ));
+      print("selected ------bGrp------$selectBloodGroup");
 
     }
   }
