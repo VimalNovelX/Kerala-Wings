@@ -176,7 +176,7 @@ class SelectProfileController extends GetxController {
          licenceFront: frontFile.value != null ? frontFile.value!.path : "",
          qus: qusDetails
      );
-     print("selected Blood-----------$selectBloodGroup");
+     print("selected Blood-----------$bloodGrp");
    } catch (e){
      print("Error-------$e");
 

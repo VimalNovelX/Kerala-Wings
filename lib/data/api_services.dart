@@ -594,6 +594,8 @@ class NetworkHelper{
         GetXSnackBar.show("Success", data["msg"], false);
         Get.offAll(VerificationScreen());
         print("response----------$data");
+        // print("upload-------------${jsonDecode(formData.toString())}");
+        // print("upload-------------${jsonEncode(formData)}");
       } else {
         GetXSnackBar.show(data["status"], data["msg"], true);
         debugPrint("data---------------$data");
