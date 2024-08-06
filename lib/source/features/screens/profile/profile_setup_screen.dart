@@ -4,6 +4,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kerala_wings/source/common_widgets/back_button.dart';
 import 'package:kerala_wings/source/common_widgets/custom_dropdown.dart';
 import 'package:kerala_wings/source/common_widgets/textfield.dart';
@@ -20,25 +21,15 @@ class ProfileSetupScreen extends StatelessWidget {
   ProfileSetupScreen({Key? key, this.phone}) : super(key: key);
 
   final SelectProfileController controller = Get.put(SelectProfileController());
-  final List<String> districts = ['Trivandrum', 'Kollam', 'Kannur', 'Kochi'];
-  final List<String> _bloodGroup = ['A +ve','B +ve','AB +ve','O +ve','A -ve','B -ve','AB -ve','O -ve',];
 
-  final selectedValue = ''.obs;
-  String? selectedDistrict;
-  String? selectBloodGroup;
+
   final RxInt selectedRadio = (-1).obs;
   final _controller = ActionSliderController();
   RxBool isFinished = false.obs;
 
   final GlobalKey<SlideActionState> _key = GlobalKey();
 
-  void onChanged(String? value) {
-    selectedDistrict = value;
-  }
 
-  void onChange(String? value) {
-    selectBloodGroup = value;
-  }
 
 
   onSubmit(){
@@ -46,7 +37,7 @@ class ProfileSetupScreen extends StatelessWidget {
       GetXSnackBar.show("Error", "Complete your details", true);
     } else if(controller.imageFile.value == null){
       GetXSnackBar.show("Error", "Add your profile profile photo", true);
-      print("values-------$selectedDistrict------$selectBloodGroup------${controller.selectMethod.value}----${controller.selectSalary.value}");
+      print("values-------${controller.selectBloodGroup.value}------${controller.selectedDistrict.value}------${controller.selectMethod.value}----${controller.selectSalary.value}");
 
     } else if(controller.drivingLicenceImages.length != 2){
       GetXSnackBar.show("Error", "Please select your licence front and back images", true);
@@ -58,12 +49,17 @@ class ProfileSetupScreen extends StatelessWidget {
     else {
       Get.to(QuestionAnsweringScreen(
           phone: phone,
-        bldGrp: selectBloodGroup,
-        district: selectedDistrict,
-        driverType: controller.selectMethod.value,
-        salaryType: controller.selectSalary.value,
+        bldGrp: controller.selectBloodGroup.value.toString(),
+        district: controller.selectedDistrict.value.toString(),
+        driverType: controller.selectMethod.value.toString(),
+        salaryType: controller.selectSalary.value.toString(),
       ));
-      print("selected ------bGrp------$selectBloodGroup");
+      print("selected ------bGrp------${controller.selectBloodGroup.value}");
+      print("selected ------district------${controller.selectedDistrict.value}");
+      print("selected ------driverTypr------${controller.selectMethod.value}");
+      print("selected ------salary------${controller.selectSalary.value}");
+      print("selected ------dob------${controller.dobController.text}");
+      print("selected ------exp------${controller.licenceDateController.text}");
 
     }
   }
@@ -214,7 +210,7 @@ class ProfileSetupScreen extends StatelessWidget {
                           controller: controller.fNameController,
                           validator: (name) {
                             if (name == null || name.isEmpty) {
-                              return "please enter your location";
+                              return "please enter father name";
                             } else {
                               return null;
                             }
@@ -312,26 +308,18 @@ class ProfileSetupScreen extends StatelessWidget {
                               ),
                               SizedBox(
                                 width: width * .26,
-                                // child: CustomTextField(
-                                //   hitText: "Eg Ab+",
-                                //   obscureText: false,
-                                //   readOnly: false,
-                                //   isExpand: false,
-                                //   validator: (name) {
-                                //     if (name == null || name.isEmpty) {
-                                //       return "please enter your Blood group";
-                                //     } else {
-                                //       return null;
-                                //     }
-                                //   },
-                                // ),
+
                                 child: Obx(
                                       () => CustomDropDown(
                                     textClr: controller.selectMethod.value == "cd"
                                         ? cPrimaryColor
                                         : cYellow,
                                     hintText: "Eg:A+ve",
-                                    onChanged: onChange,
+                                    onChanged: (String? newValue) {
+                                if (newValue != null) {
+                                controller.onChangeBld(newValue);
+                                }
+                                },
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Select';
@@ -339,13 +327,15 @@ class ProfileSetupScreen extends StatelessWidget {
                                         return null;
                                       }
                                     },
-                                    value: controller.selectBloodGroup,
-                                    items: _bloodGroup.map((String gender) {
-                                      return DropdownMenuItem<String>(
-                                        value: gender,
-                                        child: Text(gender),
-                                      );
-                                    }).toList(),
+                                        value: controller.selectBloodGroup.value.isEmpty
+                                            ? null
+                                            : controller.selectBloodGroup.value,
+                                        items: controller.bloodGroup.map((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
                                     color: controller.selectMethod.value == "cd"
                                         ? cPrimaryColor.withOpacity(.3)
                                         : cYellow.withOpacity(.3),
@@ -550,7 +540,11 @@ class ProfileSetupScreen extends StatelessWidget {
                                 ? cPrimaryColor
                                 : cYellow,
                             hintText: "",
-                            onChanged: onChanged,
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                controller.onChangedDst(newValue);
+                              }
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please select your location';
@@ -558,8 +552,10 @@ class ProfileSetupScreen extends StatelessWidget {
                                 return null;
                               }
                             },
-                            value: selectedDistrict,
-                            items: districts.map((String gender) {
+                            value: controller.selectedDistrict.value.isEmpty
+                          ? null
+                              : controller.selectedDistrict.value,
+                            items: controller.districts.map((String gender) {
                               return DropdownMenuItem<String>(
                                 value: gender,
                                 child: Text(gender),
@@ -700,57 +696,6 @@ class ProfileSetupScreen extends StatelessWidget {
                   onSubmit();
                 },
 
-
-               //  onSubmit: controller.areFilled.value  ? () {
-               //
-               //    Get.to(QuestionAnsweringScreen(phone : phone));
-               //
-               //
-               // //    print( "nameController=>${controller.nameController.text}\n"
-               // //        "homeMobController=>${controller.homeMobController.text}\n"
-               // //        "licenceController=>${controller.licenceController.text}\n"
-               // //        "licenceDateController=>${controller.licenceDateController.text}\n"
-               // //       "fNameController=>${controller.fNameController.text}\n"
-               // //        "dobController=>${controller.dobController.text}\n"
-               // //        "adharController=>${controller.adharController.text}\n"
-               // //       "addressController=>${ controller.addressController.text}\n"
-               // //        "locController=>${controller.locController.text}\n"
-               // //        "selectBloodGroup=>$selectBloodGroup\n selectedDistrict=>$selectedDistrict");
-               // //
-               // //
-               // //
-               // //
-               // //
-               // //
-               // //  if(
-               // //  controller.nameController.text.isNotEmpty&&
-               // //  controller.homeMobController.text.isNotEmpty&&controller.licenceController.text.isNotEmpty&&
-               // //      controller.licenceDateController.text.isNotEmpty&&
-               // //      controller.dobController.text.isNotEmpty&&controller.adharController.text.isNotEmpty&&
-               // //      controller.addressController.text.isNotEmpty&&controller.locController.text.isNotEmpty&&
-               // //
-               // //      selectBloodGroup!=null && selectedDistrict!=null
-               // //
-               // //
-               // //
-               // //  )  {
-               // // return   Future.delayed(
-               // //        const Duration(seconds: 1),
-               // //            () {
-               // //          Get.to( QuestionAnsweringScreen());
-               // //        }
-               // //    );
-               // //  }else{
-               // //    selectBloodGroup==null ? ToastUtil.show("Please select Blood Group"):
-               // //  selectedDistrict==null?ToastUtil.show("Please select district"):ToastUtil.show("Please fill all required fields")
-               // //    ;
-               // //
-               // //     return null;
-               // //  }
-               //
-               //  } : (){
-               //    GetXSnackBar.show("Note", "Complete your details", true);
-               //  },
                 reversed: true,
               )
             ),

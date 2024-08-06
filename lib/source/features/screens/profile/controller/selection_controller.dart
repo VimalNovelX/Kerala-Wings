@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,27 +8,30 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:kerala_wings/data/api_services.dart';
 import 'package:kerala_wings/data/models/driver_register.dart';
+import 'package:kerala_wings/utils/snack_bar.dart';
 
 
 class SelectProfileController extends GetxController {
 
-  final List<String> districts = ['Trivandrum', 'Kollam', 'Pathanamthitta', 'Alappuzha','Kottayam','Idukki','Eranakulam','Thissur','Palakkadu','Malappuram','Kozhikode','Kannur','Kasarragod'];
-  final List<String> bloodGroup = ['A +ve','B +ve','AB +ve','O +ve','A -ve','B -ve','AB -ve','O -ve',];
+  var districts = ['Trivandrum', 'Kollam', 'Pathanamthitta', 'Alappuzha','Kottayam','Idukki','Eranakulam','Thissur','Palakkadu','Malappuram','Kozhikode','Kannur','Kasarragod'];
 
   final selectedValue = ''.obs;
-  String? selectedDistrict;
-  String? selectBloodGroup;
+  final selectedDistrict = ''.obs;
+  final selectBloodGroup = ''.obs;
   final RxInt selectedRadio = (-1).obs;
   RxBool isFinished = false.obs;
 
 
-  void onChanged(String? value) {
-    selectedDistrict = value;
+  void onChangedDst(String value) {
+    selectedDistrict.value = value;
   }
 
-  void onChange(String? value) {
-    selectBloodGroup = value;
+  void onChangeBld(String value) {
+    selectBloodGroup.value = value;
   }
+
+  var bloodGroup = ['A +ve','B +ve','AB +ve','O +ve','A -ve','B -ve','AB -ve','O -ve',];
+
 
 
 
@@ -148,44 +153,65 @@ class SelectProfileController extends GetxController {
   }
 
 
- void registerDriver(context,
-     {qusDetails, phone, district, bloodGrp, driverType, salaryType}) async {
-   try {
+  registerDriver(context, {qusDetails, phone, district, bloodGrp, driverType, salaryType}) async {
+    try {
+      // Ensure all values are lowercase and convert to string format
+      Map<String, String> formattedQusDetails = {};
+      qusDetails.forEach((key, value) {
+        formattedQusDetails[key.toString()] = value.toString().toLowerCase();
+      });
 
-     NetworkHelper().driverRegistrationApi(
-         context: context,
-         name: nameController.text,
-         phone:phone ,
-         driverType: driverType,
-         address: addressController.text,
-         licence: licenceController.text,
-         dob: dobController.text,
-         licenceExp: licenceDateController.text,
-         sType: salaryType,
-         district: district,
-         adhaar: adharController.text,
-         hPhone: homeMobController.text,
-         location: locController.text,
-         bGroup:bloodGrp,
-         father: fNameController.text,
-         photoName: imageFile.value != null ? imageFile.value!.path.split("/").last : "",
-         photos: imageFile.value != null ? imageFile.value!.path : "",
-         licenceBackName: backFile.value != null ? backFile.value!.path.split("/").last : "",
-         licenceBack: backFile.value != null ? backFile.value!.path : "",
-         licenceFrontName: frontFile.value != null ? frontFile.value!.path.split("/").last : "",
-         licenceFront: frontFile.value != null ? frontFile.value!.path : "",
-         qus: qusDetails
-     );
-     print("selected Blood-----------$bloodGrp");
-   } catch (e){
-     print("Error-------$e");
+      // Convert the formattedQusDetails to a JSON string
+      String qusString = jsonEncode(formattedQusDetails);
+      print("selected quis str-----------$qusString");
 
-   }
+
+      await NetworkHelper().driverRegistrationApi(
+        context: context,
+        name: nameController.text,
+        phone: phone.toString(),
+        driverType: driverType.toString(),
+        address: addressController.text,
+        licence: licenceController.text,
+        dob: dobController.text,
+        licenceExp: licenceDateController.text,
+        sType: salaryType.toString(),
+        district: district.toString(),
+        adhaar: adharController.text,
+        hPhone: homeMobController.text,
+        location: locController.text,
+        bGroup: bloodGrp.toString(),
+        father: fNameController.text,
+        photoName: imageFile.value != null ? imageFile.value!.path.split("/").last : "",
+        photos: imageFile.value != null ? imageFile.value!.path : "",
+        licenceBackName: backFile.value != null ? backFile.value!.path.split("/").last : "",
+        licenceBack: backFile.value != null ? backFile.value!.path : "",
+        licenceFrontName: frontFile.value != null ? frontFile.value!.path.split("/").last : "",
+        licenceFront: frontFile.value != null ? frontFile.value!.path : "",
+        qus: qusString, // Pass the JSON string
+      );
+      print("selected Blood-----------$bloodGrp");
+      print("selected dis-----------$district");
+      print("selected salary-----------$salaryType");
+      print("selected driver-----------$driverType");
+      print("selected phone-----------$phone");
+      print("selected dob-----------${dobController.text}");
+      print("selected dob-----------${licenceDateController.text}");
+    } catch (e) {
+      print("Error-------$e");
+      GetXSnackBar.show("Error", "An error occurred. Please try again.", true);
+
+    }
   }
 
 
 
-Future<DriverRegisterModel?>? driverRegisterModel;
+
+
+
+
+
+  Future<DriverRegisterModel?>? driverRegisterModel;
 
   //
   // Future<DriverRegisterModel?>? registerDriver({context,activeLocation,address,adhaarNo,backLicence,bloodGroup,districts,dob,driverType,fName,father,frontLicence,hPhone,

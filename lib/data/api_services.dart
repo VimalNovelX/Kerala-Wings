@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart' as getx;
+import 'package:mime/mime.dart';
+import 'package:http/http.dart' as http;
+
 
 // import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
-import 'package:http/http.dart'as http;
 import 'package:kerala_wings/data/models/applied_leave_model.dart';
 import 'package:kerala_wings/data/models/driver_register.dart';
 import 'package:kerala_wings/data/models/driver_terms_n_conditions.dart';
@@ -18,6 +20,7 @@ import 'package:kerala_wings/source/features/screens/home/home_screen.dart';
 import 'package:kerala_wings/source/features/screens/verification/verification_screen.dart';
 import 'package:kerala_wings/utils/snack_bar.dart';
 import 'package:kerala_wings/utils/constants.dart';
+// import 'package:mime/mime.dart';
 import '../utils/shared_preferences.dart';
 import '../utils/toastUtil.dart';
 import '../utils/urls.dart';
@@ -31,7 +34,13 @@ import 'models/tarrif_model.dart';
 
 
 
+
 class NetworkHelper{
+
+
+
+
+
 
 
   Future login({required BuildContext context, required String phone}) async {
@@ -129,52 +138,6 @@ class NetworkHelper{
   }
 
 
-  Future<DriverRegisterModel?> driverRegisterApi(
-      {required BuildContext context,f_name,phone,
-        driverType,address,licenceNo,dob,licenceExp,
-        salaryType,districts,adhaarNo,hPhone,
-        activeLocation,required File frontLicence,required File backLicence,
-        profile,bloodGroup,qus,father
-      }) async {
-    http.Response? response;
-    response = await _postRequest(
-      context: context,
-      url: "${Urls.driverRegisterUrl}",
-      header: {
-        "Content-Type": "application/json",
-        // "Authorization": "Bearer $token"
-      }, body: {
-    "f_name":f_name,
-    "phone":phone,
-    "driver_type":driverType,
-    "address":address,
-    "licence_no":licenceNo,
-    "dob":dob,
-    "licence_exp":licenceExp,
-    "salary_type":salaryType,
-    "districts":districts,
-    "adhaar_no":adhaarNo,
-    "h_phone":hPhone,
-    "active_location":activeLocation,
-    "front_licence":base64Encode(frontLicence.readAsBytesSync()),
-    "back_licence":base64Encode(backLicence.readAsBytesSync()),
-    "profile":profile,
-    "blood_group":bloodGroup,
-    "qus":jsonEncode(qus),
-  //"qus":{"2":"yes","3":"no","4":"no","5":"yes","7":"yes"},
-    "father":father,
- },);
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      ToastUtil.show("${data['msg']}");
-
-      return DriverRegisterModel.fromJson(jsonDecode(response.body));
-    } else {
-      ToastUtil.show("Server Error Please try After sometime");
-      debugPrint(response.body);
-      return null;
-    }
-  }
 
 
   Future<DriverViewTripDetailsModel?> driverViewTripDetailsApi(
@@ -575,7 +538,7 @@ class NetworkHelper{
         "back_licence": backLicence,
         "profile": profileFile,
         "blood_group": bGroup,
-        "qus": qusStringMap,
+        "qus": qus,
         "father": father,
       });
 
@@ -607,6 +570,7 @@ class NetworkHelper{
       GetXSnackBar.show("Error", "An error occurred. Please try again.", true);
     }
   }
+
 
 
 
