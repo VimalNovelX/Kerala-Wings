@@ -33,8 +33,9 @@ class TripCardWidget extends StatefulWidget {
   final String? address;
   final String? driverStatus;
   final String? enDate;
+  final onTap;
 
-  const TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType, this.bookingId, this.tripType, this.trippType, this.remark, this.address, this.driverStatus, this.enDate,  }) : super(key: key);
+   TripCardWidget({Key? key, this.customerName, this.customerNumber, this.bookingType, this.date, this.destination, this.driverIdAssign, this.pickupLocation, this.time, this.vehicle, this.vehNo, this.vehType, this.bookingId, this.tripType, this.trippType, this.remark, this.address, this.driverStatus, this.enDate, this.onTap,  }) : super(key: key);
 
   @override
   State<TripCardWidget> createState() => _TripCardWidgetState();
@@ -65,7 +66,7 @@ class _TripCardWidgetState extends State<TripCardWidget> {
     DateTime currentDate = DateTime.now();
 
     // Get tomorrow's date
-    DateTime tomorrowDate = currentDate.add(Duration(days: 1));
+    DateTime tomorrowDate = currentDate.add(const Duration(days: 1));
 
     // Compare the parsed date with the current date and tomorrow's date
     if (parsedDate.year == currentDate.year &&
@@ -99,21 +100,8 @@ return callMonitorModel;
     var height = MediaQuery.of(context).size.height;
     var today = getDayStatus(widget.date!);
     return InkWell(
-      onTap: (){
-        Get.bottomSheet(
-          BottomSheetWidget(
-              bookingId:widget.bookingId,
-              customerName: widget.customerName,
-              vehNo:  widget.vehNo,
-              vehType:  widget.vehType,vehicle:widget.vehicle,
-              time:  widget.time,driverIdAssign:widget.driverIdAssign,
-              date:  widget.date,
-              bookingType: widget.bookingType,
-              pickupLocation:    widget.pickupLocation,
-              driverStatus: widget.driverStatus,
-              destination:widget.destination)
-        );
-      },
+      onTap: widget.onTap,
+
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
@@ -151,14 +139,14 @@ return callMonitorModel;
 
                             Text(
                               widget.time!.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12
                               ),
                             ),
-                            SizedBox(width: 5,),
-                            VerticalDivider(
+                            const SizedBox(width: 5,),
+                            const VerticalDivider(
                               indent: 2,
                               endIndent: 2,
                               thickness: 1,
@@ -166,11 +154,11 @@ return callMonitorModel;
                               width: 2,
 
                             ),
-                            SizedBox(width: 5,),
+                            const SizedBox(width: 5,),
 
                             Text(
                                 widget.date!.toString()+" - " +widget.enDate.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12
@@ -189,10 +177,10 @@ return callMonitorModel;
                     //topBox
 
                      Padding(
-                      padding: EdgeInsets.only(left: 15.0,top: 8,bottom: 2),
+                      padding: const EdgeInsets.only(left: 15.0,top: 8,bottom: 2),
                       child: Text(
                           widget.customerName!.toString(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600
                         ),
@@ -229,7 +217,7 @@ return callMonitorModel;
                             RichText(
                                 text:  TextSpan(
                                   text: widget.vehNo!.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     color: cPrimaryColor,
                                     fontWeight: FontWeight.w500
@@ -268,11 +256,11 @@ return callMonitorModel;
 
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0,bottom:4,left: 5,right: 15),
-                  child: Text("$today",
-                      style: TextStyle(
+                  child: Text(today,
+                      style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
-                          fontSize: 15
+                          fontSize: 12
                       )
 
                   ),
@@ -484,7 +472,7 @@ return callMonitorModel;
                           child: SvgPicture.asset(iPhone),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
 
                       Container(
                         width:100,
@@ -499,7 +487,7 @@ return callMonitorModel;
                         child:  Center(
                           child: Text(
                             widget.driverStatus.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12
@@ -525,7 +513,7 @@ return callMonitorModel;
     return RichText(text:
                          TextSpan(
                           text: "$text1\n",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: cDarkBlue
@@ -533,7 +521,7 @@ return callMonitorModel;
                           children: [
                             TextSpan(
                               text:  "$text2",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.grey

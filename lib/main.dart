@@ -24,9 +24,11 @@ class MyApp extends StatelessWidget {
     return  InAppNotification(
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) =>CurrentIndexProvider() ),
+          ChangeNotifierProvider(
+              create: (_) =>CurrentIndexProvider(),
+          ),
         ],
-        child: GetMaterialApp(
+        child: const GetMaterialApp(
           title: 'Kerala Wings',
           debugShowCheckedModeBanner: false,
           home:

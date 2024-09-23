@@ -39,7 +39,38 @@ class NetworkHelper{
 
 
 
+// Seen update api........
 
+
+Future seenUpdate({
+  required context,
+  required String bookingId
+}) async {
+  http.Response? response;
+  response = await _postRequest(
+      context: context,
+      url: Urls.driverSeenUpdate,
+      body: {
+
+        "booking_id" : bookingId
+      },
+    header: {
+  "Content-Type": "application/json",
+  // "Authorization": "Bearer $token"
+  },
+
+  );
+  var data = jsonDecode(response.body);
+  if(response.statusCode == 200)
+    {
+      debugPrint("Success------------------$data");
+    }
+  else
+    {
+      debugPrint("Error------------------$data");
+
+    }
+}
 
 
 
@@ -146,7 +177,7 @@ class NetworkHelper{
     http.Response? response;
     response = await _postRequest(
       context: context,
-      url: "${Urls.driverViewTripDetailsUrl}",
+      url: Urls.driverViewTripDetailsUrl,
       header: {
         "Content-Type": "application/json",
         // "Authorization": "Bearer $token"
@@ -166,12 +197,12 @@ class NetworkHelper{
     }
   }
  Future<StartTripModel?> startDriverTripApi(
-      {required BuildContext context,bookingId, tripStartBy
+      {required  context,bookingId, tripStartBy
       }) async {
     http.Response? response;
     response = await _postRequest(
       context: context,
-      url: "${Urls.startDriverTripUrl}",
+      url: Urls.startDriverTripUrl,
       header: {
         "Content-Type": "application/json",
         // "Authorization": "Bearer $token"
@@ -182,6 +213,8 @@ class NetworkHelper{
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       ToastUtil.show("${data['msg']}");
+      // Get.offAll(HomeScreen(driverId: driverId,));
+
 
       return StartTripModel.fromJson(jsonDecode(response.body));
     } else {
@@ -193,12 +226,15 @@ class NetworkHelper{
 
 
   Future<EndTripModel?> endTripApi(
-      {required BuildContext context,bookingId, tripStartBy,amount
+      {required  context,
+        required String bookingId,
+        required String tripStartBy,
+        required String amount
       }) async {
     http.Response? response;
     response = await _postRequest(
       context: context,
-      url: "${Urls.endTripUrl}",
+      url: Urls.endTripUrl,
       header: {
         "Content-Type": "application/json",
         // "Authorization": "Bearer $token"
@@ -211,6 +247,8 @@ class NetworkHelper{
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       ToastUtil.show("${data['msg']}");
+      debugPrint("Success----------------$data");
+
 
       return EndTripModel.fromJson(jsonDecode(response.body));
     } else {
